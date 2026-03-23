@@ -1,8 +1,10 @@
-from bson import ObjectId
+from beanie import PydanticObjectId
 from fastapi import HTTPException, status
 
 from app.models.partida import Partida, Posicion
 from app.models.usuario import Usuario
+from app.models.ibermon_jugador import IbermonJugador
+from app.models.item_jugador import ItemJugador
 from app.schemas.partida_schema import (
     PartidaNuevaSchema,
     GuardarPartidaSchema,
@@ -20,7 +22,6 @@ async def crear_partida(datos: PartidaNuevaSchema, usuario: Usuario) -> Partida:
     )
     await nueva_partida.insert()
 
-    # Añadir la partida al array de partidas del usuario
     usuario.partidas.append(nueva_partida.id)
     await usuario.save()
 
@@ -66,3 +67,20 @@ async def actualizar_posicion(partida_id: str, datos: ActualizarPosicionSchema, 
     partida.posicion = Posicion(x=datos.posicion.x, y=datos.posicion.y)
     await partida.save()
     return partida
+
+
+async def eliminar_partida(partida_id: str, usuario: Usuario) -> None:
+    partida = await obtener_partida_por_id(partida_id, usuario)
+
+    # Eliminar todos los ibermon de la partida
+    await IbermonJugador.find(IbermonJugador.partida_id == partida.id).delete()
+
+    # Eliminar todos los items del inventario de la partida
+    await ItemJugador.find(ItemJugador.partida_id == partida.id).delete()
+
+    # Quitar la partida del array del usuario
+    usuario.partidas = [p for p in usuario.partidas if p != partida.id]
+    await usuario.save()
+
+    # Eliminar la partida
+    await partida.delete()

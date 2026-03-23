@@ -57,3 +57,8 @@ async def mover_ibermon(partida_id: str, ibermon_id: str, datos: IbermonJugadorM
 async def actualizar_ibermon(partida_id: str, ibermon_id: str, datos: IbermonJugadorActualizarSchema, usuario: Usuario = Depends(get_current_user)):
     ibermon = await ibermon_jugador_service.actualizar_ibermon(ibermon_id, datos, usuario)
     return ibermon_to_schema(ibermon)
+
+
+@router.delete("/{ibermon_id}", status_code=204)
+async def eliminar_ibermon(partida_id: str, ibermon_id: str, usuario: Usuario = Depends(get_current_user)):
+    await ibermon_jugador_service.eliminar_ibermon(partida_id, ibermon_id, usuario)

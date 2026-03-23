@@ -84,3 +84,8 @@ async def guardar_partida(partida_id: str, datos: GuardarPartidaSchema, usuario:
 async def actualizar_posicion(partida_id: str, datos: ActualizarPosicionSchema, usuario: Usuario = Depends(get_current_user)):
     partida = await partida_service.actualizar_posicion(partida_id, datos, usuario)
     return partida_to_completa(partida)
+
+
+@router.delete("/{partida_id}", status_code=204)
+async def eliminar_partida(partida_id: str, usuario: Usuario = Depends(get_current_user)):
+    await partida_service.eliminar_partida(partida_id, usuario)

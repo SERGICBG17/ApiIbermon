@@ -1,7 +1,6 @@
 from fastapi import HTTPException, status
 
 from app.models.ibermon_jugador import IbermonJugador
-from app.models.partida import Partida
 from app.models.usuario import Usuario
 from app.schemas.ibermon_jugador_schema import (
     IbermonJugadorCrearSchema,
@@ -21,7 +20,6 @@ async def obtener_ibermon_o_404(ibermon_id: str) -> IbermonJugador:
 async def anadir_ibermon(partida_id: str, datos: IbermonJugadorCrearSchema, usuario: Usuario) -> IbermonJugador:
     partida = await obtener_partida_por_id(partida_id, usuario)
 
-    # Comprobar limite de equipo
     if datos.ubicacion == "equipo" and len(partida.equipo) >= 6:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -57,7 +55,6 @@ async def mover_ibermon(partida_id: str, ibermon_id: str, datos: IbermonJugadorM
             detail="El equipo ya tiene 6 ibermon",
         )
 
-    # Actualizar listas en partida
     if ibermon.ubicacion == "equipo":
         partida.equipo.remove(ibermon.id)
         partida.centro_ibermon.append(ibermon.id)
@@ -92,6 +89,20 @@ async def actualizar_ibermon(ibermon_id: str, datos: IbermonJugadorActualizarSch
 
     await ibermon.save()
     return ibermon
+
+
+async def eliminar_ibermon(partida_id: str, ibermon_id: str, usuario: Usuario) -> None:
+    partida = await obtener_partida_por_id(partida_id, usuario)
+    ibermon = await obtener_ibermon_o_404(ibermon_id)
+
+    # Quitarlo de la lista correspondiente en la partida
+    if ibermon.ubicacion == "equipo":
+        partida.equipo = [e for e in partida.equipo if e != ibermon.id]
+    else:
+        partida.centro_ibermon = [c for c in partida.centro_ibermon if c != ibermon.id]
+
+    await partida.save()
+    await ibermon.delete()
 
 
 async def obtener_equipo(partida_id: str, usuario: Usuario) -> list[IbermonJugador]:
