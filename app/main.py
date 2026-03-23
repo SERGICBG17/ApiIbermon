@@ -5,12 +5,11 @@ from starlette.responses import HTMLResponse
 
 from app.core.config import settings
 from app.db.session import connect_db
-from app.routers import auth_router, partida_router, ibermon_jugador_router, catalogo_router
+from app.routers import auth_router, partida_router, ibermon_jugador_router, catalogo_router, item_jugador_router
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Al arrancar la app conecta con MongoDB
     await connect_db()
     yield
 
@@ -22,10 +21,10 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# Routers
 app.include_router(auth_router.router)
 app.include_router(partida_router.router)
 app.include_router(ibermon_jugador_router.router)
+app.include_router(item_jugador_router.router)
 app.include_router(catalogo_router.router)
 
 

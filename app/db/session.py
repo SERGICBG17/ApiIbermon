@@ -5,6 +5,7 @@ from app.core.config import settings
 from app.models.usuario import Usuario
 from app.models.partida import Partida
 from app.models.ibermon_jugador import IbermonJugador
+from app.models.item_jugador import ItemJugador
 from app.models.ibermon_catalogo import IbermonCatalogo
 from app.models.movimiento_catalogo import MovimientoCatalogo
 from app.models.item_catalogo import ItemCatalogo
@@ -20,6 +21,7 @@ async def connect_db():
             Usuario,
             Partida,
             IbermonJugador,
+            ItemJugador,
             IbermonCatalogo,
             MovimientoCatalogo,
             ItemCatalogo,
