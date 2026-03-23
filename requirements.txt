@@ -1,0 +1,21 @@
+# Web framework
+fastapi[standard]
+uvicorn[standard]==0.30.6
+
+# MongoDB
+motor==3.5.1
+beanie==1.26.0
+
+# Autenticación y seguridad
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+bcrypt==4.2.0
+
+# Variables de entorno
+pydantic-settings==2.4.0
+
+# Validación email
+email-validator==2.2.0
+
+# BSON (ObjectId)
+pymongo==4.8.0

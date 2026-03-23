@@ -1,7 +1,7 @@
-from beanie import Document
+from beanie import Document, PydanticObjectId
 from pydantic import BaseModel
 from typing import List, Dict
-from bson import ObjectId
+
 
 class Posicion(BaseModel):
     x: float
@@ -14,7 +14,7 @@ class ItemInventario(BaseModel):
 
 
 class Partida(Document):
-    usuario_id: ObjectId
+    usuario_id: PydanticObjectId
     personaje_elegido: str
     starter_elegido: int              # ref a IbermonCatalogo.numero
     mapa_actual: str
@@ -23,8 +23,8 @@ class Partida(Document):
     tiempo_jugado: int = 0            # en segundos
 
     # Ibermon — referencias a IbermonJugador._id
-    equipo: List[ObjectId] = []       # max 6
-    centro_ibermon: List[ObjectId] = []  # sin limite
+    equipo: List[PydanticObjectId] = []          # max 6
+    centro_ibermon: List[PydanticObjectId] = []  # sin limite
 
     # Inventario embebido directamente en la partida
     inventario: List[ItemInventario] = []

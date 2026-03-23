@@ -1,9 +1,9 @@
-from beanie import Document
+from beanie import Document, PydanticObjectId
 from typing import List, Optional
-from bson import ObjectId
+
 
 class IbermonJugador(Document):
-    partida_id: ObjectId
+    partida_id: PydanticObjectId
     ibermon_catalogo_id: int          # ref a IbermonCatalogo.numero
     nickname: Optional[str] = None
     nivel: int = 1
