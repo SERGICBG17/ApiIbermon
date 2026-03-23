@@ -6,19 +6,24 @@ from app.services.auth_service import registrar_usuario, login_usuario
 from app.core.security import get_current_user
 from app.models.usuario import Usuario
 
+
+def usuario_to_publico(u: Usuario) -> UsuarioPublicoSchema:
+    return UsuarioPublicoSchema(
+        id=str(u.id),
+        username=u.username,
+        email=u.email,
+        fecha_registro=u.fecha_registro,
+        partidas=[str(p) for p in u.partidas],
+    )
+
+
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
 
-@router.post("/registro", response_model=UsuarioPublicoSchema, status_code=201)
+@router.post("/registro", status_code=201)
 async def registro(datos: UsuarioRegistroSchema):
     usuario = await registrar_usuario(datos)
-    return UsuarioPublicoSchema(
-        id=str(usuario.id),
-        username=usuario.username,
-        email=usuario.email,
-        fecha_registro=usuario.fecha_registro,
-        partidas=[str(p) for p in usuario.partidas],
-    )
+    return usuario_to_publico(usuario)
 
 
 @router.post("/login", response_model=TokenSchema)
@@ -28,12 +33,6 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     return await login_usuario(datos)
 
 
-@router.get("/yo", response_model=UsuarioPublicoSchema)
+@router.get("/yo")
 async def yo(usuario: Usuario = Depends(get_current_user)):
-    return UsuarioPublicoSchema(
-        id=str(usuario.id),
-        username=usuario.username,
-        email=usuario.email,
-        fecha_registro=usuario.fecha_registro,
-        partidas=[str(p) for p in usuario.partidas],
-    )
+    return usuario_to_publico(usuario)
