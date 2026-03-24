@@ -8,11 +8,6 @@ class Posicion(BaseModel):
     y: float
 
 
-class ItemInventario(BaseModel):
-    item_catalogo_id: int             # ref a ItemCatalogo.numero
-    cantidad: int
-
-
 class Partida(Document):
     usuario_id: PydanticObjectId
     personaje_elegido: str
@@ -26,20 +21,17 @@ class Partida(Document):
     equipo: List[PydanticObjectId] = []          # max 6
     centro_ibermon: List[PydanticObjectId] = []  # sin limite
 
-    # Inventario embebido directamente en la partida
-    inventario: List[ItemInventario] = []
-
     # Pokedex
-    pokedex_visto: List[int] = []     # numeros de IbermonCatalogo
-    pokedex_capturado: List[int] = [] # numeros de IbermonCatalogo
+    pokedex_visto: List[int] = []
+    pokedex_capturado: List[int] = []
 
     # Progreso
     medallas: List[str] = []
-    logros: List[str] = []            # codigos de LogroCatalogo
+    logros: List[str] = []
     combates_ganados: int = 0
     combates_perdidos: int = 0
 
-    # Flags del mundo: cofres abiertos, NPCs hablados, eventos completados
+    # Flags del mundo
     flags: Dict[str, bool] = {}
 
     class Settings:

@@ -1,18 +1,12 @@
 from pydantic import BaseModel
 from typing import List, Dict, Optional
-from bson import ObjectId
 
 
-# --- SUBMODELOS COMPARTIDOS ---
+# --- SUBMODELOS ---
 
 class PosicionSchema(BaseModel):
     x: float
     y: float
-
-
-class ItemInventarioSchema(BaseModel):
-    item_catalogo_id: int
-    cantidad: int
 
 
 # --- REQUEST ---
@@ -20,7 +14,7 @@ class ItemInventarioSchema(BaseModel):
 class PartidaNuevaSchema(BaseModel):
     """Datos para crear una nueva partida."""
     personaje_elegido: str
-    starter_elegido: int              # numero del ibermon inicial
+    starter_elegido: int
 
 
 class GuardarPartidaSchema(BaseModel):
@@ -29,7 +23,6 @@ class GuardarPartidaSchema(BaseModel):
     posicion: PosicionSchema
     dinero: int
     tiempo_jugado: int
-    inventario: List[ItemInventarioSchema] = []
     pokedex_visto: List[int] = []
     pokedex_capturado: List[int] = []
     medallas: List[str] = []
@@ -48,7 +41,7 @@ class ActualizarPosicionSchema(BaseModel):
 # --- RESPONSE ---
 
 class PartidaResumenSchema(BaseModel):
-    """Resumen de una partida para listarlas (sin todo el detalle)."""
+    """Resumen de una partida para listarlas."""
     id: str
     personaje_elegido: str
     mapa_actual: str
@@ -68,9 +61,8 @@ class PartidaCompletaSchema(BaseModel):
     posicion: PosicionSchema
     dinero: int
     tiempo_jugado: int
-    equipo: List[str] = []            # ids de IbermonJugador
-    centro_ibermon: List[str] = []    # ids de IbermonJugador
-    inventario: List[ItemInventarioSchema] = []
+    equipo: List[str] = []
+    centro_ibermon: List[str] = []
     pokedex_visto: List[int] = []
     pokedex_capturado: List[int] = []
     medallas: List[str] = []

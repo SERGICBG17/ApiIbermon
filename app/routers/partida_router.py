@@ -7,7 +7,6 @@ from app.schemas.partida_schema import (
     PartidaResumenSchema,
     PartidaCompletaSchema,
     PosicionSchema,
-    ItemInventarioSchema,
 )
 from app.services import partida_service
 from app.core.security import get_current_user
@@ -27,10 +26,6 @@ def partida_to_completa(p: Partida) -> PartidaCompletaSchema:
         tiempo_jugado=p.tiempo_jugado,
         equipo=[str(e) for e in p.equipo],
         centro_ibermon=[str(c) for c in p.centro_ibermon],
-        inventario=[
-            ItemInventarioSchema(item_catalogo_id=i.item_catalogo_id, cantidad=i.cantidad)
-            for i in p.inventario
-        ],
         pokedex_visto=p.pokedex_visto,
         pokedex_capturado=p.pokedex_capturado,
         medallas=p.medallas,

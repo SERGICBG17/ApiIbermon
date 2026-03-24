@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.schemas.ibermon_jugador_schema import (
     IbermonJugadorCrearSchema,
@@ -62,3 +62,74 @@ async def actualizar_ibermon(partida_id: str, ibermon_id: str, datos: IbermonJug
 @router.delete("/{ibermon_id}", status_code=204)
 async def eliminar_ibermon(partida_id: str, ibermon_id: str, usuario: Usuario = Depends(get_current_user)):
     await ibermon_jugador_service.eliminar_ibermon(partida_id, ibermon_id, usuario)
+
+
+# --- MOVIMIENTOS DEL IBERMON ---
+
+@router.put("/{ibermon_id}/movimientos")
+async def actualizar_movimientos(
+    partida_id: str,
+    ibermon_id: str,
+    movimientos: list[int],
+    usuario: Usuario = Depends(get_current_user)
+):
+    """
+    Actualiza los movimientos aprendidos de un ibermon.
+    Recibe una lista de numeros de movimiento (ref MovimientoCatalogo).
+    Maximo 4 movimientos.
+    """
+    if len(movimientos) > 4:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Un ibermon solo puede tener 4 movimientos"
+        )
+    ibermon = await ibermon_jugador_service.obtener_ibermon_o_404(ibermon_id)
+    ibermon.movimientos_aprendidos = movimientos
+    await ibermon.save()
+    return ibermon_to_schema(ibermon)
+
+
+@router.post("/{ibermon_id}/movimientos/{numero_movimiento}", status_code=201)
+async def aprender_movimiento(
+    partida_id: str,
+    ibermon_id: str,
+    numero_movimiento: int,
+    usuario: Usuario = Depends(get_current_user)
+):
+    """Añade un movimiento al ibermon. Maximo 4."""
+    ibermon = await ibermon_jugador_service.obtener_ibermon_o_404(ibermon_id)
+
+    if numero_movimiento in ibermon.movimientos_aprendidos:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="El ibermon ya tiene ese movimiento"
+        )
+    if len(ibermon.movimientos_aprendidos) >= 4:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="El ibermon ya tiene 4 movimientos. Elimina uno primero"
+        )
+
+    ibermon.movimientos_aprendidos.append(numero_movimiento)
+    await ibermon.save()
+    return ibermon_to_schema(ibermon)
+
+
+@router.delete("/{ibermon_id}/movimientos/{numero_movimiento}", status_code=204)
+async def olvidar_movimiento(
+    partida_id: str,
+    ibermon_id: str,
+    numero_movimiento: int,
+    usuario: Usuario = Depends(get_current_user)
+):
+    """Elimina un movimiento del ibermon."""
+    ibermon = await ibermon_jugador_service.obtener_ibermon_o_404(ibermon_id)
+
+    if numero_movimiento not in ibermon.movimientos_aprendidos:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="El ibermon no tiene ese movimiento"
+        )
+
+    ibermon.movimientos_aprendidos.remove(numero_movimiento)
+    await ibermon.save()
