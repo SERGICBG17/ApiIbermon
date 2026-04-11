@@ -2,6 +2,14 @@ from pydantic import BaseModel
 from typing import List, Optional
 
 
+# --- SUBMODELO ---
+
+class MovimientoAprendidoSchema(BaseModel):
+    """Movimiento conocido por un ibermon del jugador, con sus PP actuales."""
+    numero: int
+    pp: int
+
+
 # --- REQUEST ---
 
 class IbermonJugadorCrearSchema(BaseModel):
@@ -23,7 +31,7 @@ class IbermonJugadorActualizarSchema(BaseModel):
     nivel: Optional[int] = None
     experiencia: Optional[int] = None
     hp_actual: Optional[int] = None
-    movimientos_aprendidos: Optional[List[int]] = None
+    movimientos_aprendidos: Optional[List[MovimientoAprendidoSchema]] = None
     nickname: Optional[str] = None
 
 
@@ -39,4 +47,4 @@ class IbermonJugadorSchema(BaseModel):
     experiencia: int
     hp_actual: int
     ubicacion: str
-    movimientos_aprendidos: List[int] = []
+    movimientos_aprendidos: List[MovimientoAprendidoSchema] = []

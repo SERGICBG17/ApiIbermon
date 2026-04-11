@@ -5,11 +5,13 @@ from app.schemas.ibermon_jugador_schema import (
     IbermonJugadorMoverSchema,
     IbermonJugadorActualizarSchema,
     IbermonJugadorSchema,
+    MovimientoAprendidoSchema,
 )
 from app.services import ibermon_jugador_service
 from app.core.security import get_current_user
 from app.models.usuario import Usuario
-from app.models.ibermon_jugador import IbermonJugador
+from app.models.ibermon_jugador import IbermonJugador, MovimientoAprendido
+from app.models.movimiento_catalogo import MovimientoCatalogo
 
 
 def ibermon_to_schema(ib: IbermonJugador) -> IbermonJugadorSchema:
@@ -22,7 +24,10 @@ def ibermon_to_schema(ib: IbermonJugador) -> IbermonJugadorSchema:
         experiencia=ib.experiencia,
         hp_actual=ib.hp_actual,
         ubicacion=ib.ubicacion,
-        movimientos_aprendidos=ib.movimientos_aprendidos,
+        movimientos_aprendidos=[
+            MovimientoAprendidoSchema(numero=m.numero, pp=m.pp)
+            for m in ib.movimientos_aprendidos
+        ],
     )
 
 
@@ -70,13 +75,12 @@ async def eliminar_ibermon(partida_id: str, ibermon_id: str, usuario: Usuario = 
 async def actualizar_movimientos(
     partida_id: str,
     ibermon_id: str,
-    movimientos: list[int],
+    movimientos: list[MovimientoAprendidoSchema],
     usuario: Usuario = Depends(get_current_user)
 ):
     """
-    Actualiza los movimientos aprendidos de un ibermon.
-    Recibe una lista de numeros de movimiento (ref MovimientoCatalogo).
-    Maximo 4 movimientos.
+    Reemplaza todos los movimientos aprendidos de un ibermon.
+    Recibe una lista de {numero, pp}. Maximo 4 movimientos.
     """
     if len(movimientos) > 4:
         raise HTTPException(
@@ -84,7 +88,9 @@ async def actualizar_movimientos(
             detail="Un ibermon solo puede tener 4 movimientos"
         )
     ibermon = await ibermon_jugador_service.obtener_ibermon_o_404(ibermon_id)
-    ibermon.movimientos_aprendidos = movimientos
+    ibermon.movimientos_aprendidos = [
+        MovimientoAprendido(numero=m.numero, pp=m.pp) for m in movimientos
+    ]
     await ibermon.save()
     return ibermon_to_schema(ibermon)
 
@@ -96,10 +102,10 @@ async def aprender_movimiento(
     numero_movimiento: int,
     usuario: Usuario = Depends(get_current_user)
 ):
-    """Añade un movimiento al ibermon. Maximo 4."""
+    """Añade un movimiento al ibermon con sus PP al máximo. Maximo 4."""
     ibermon = await ibermon_jugador_service.obtener_ibermon_o_404(ibermon_id)
 
-    if numero_movimiento in ibermon.movimientos_aprendidos:
+    if any(m.numero == numero_movimiento for m in ibermon.movimientos_aprendidos):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="El ibermon ya tiene ese movimiento"
@@ -110,7 +116,16 @@ async def aprender_movimiento(
             detail="El ibermon ya tiene 4 movimientos. Elimina uno primero"
         )
 
-    ibermon.movimientos_aprendidos.append(numero_movimiento)
+    movimiento_catalogo = await MovimientoCatalogo.find_one(MovimientoCatalogo.numero == numero_movimiento)
+    if not movimiento_catalogo:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Movimiento no encontrado en el catálogo"
+        )
+
+    ibermon.movimientos_aprendidos.append(
+        MovimientoAprendido(numero=numero_movimiento, pp=movimiento_catalogo.pp)
+    )
     await ibermon.save()
     return ibermon_to_schema(ibermon)
 
@@ -125,11 +140,14 @@ async def olvidar_movimiento(
     """Elimina un movimiento del ibermon."""
     ibermon = await ibermon_jugador_service.obtener_ibermon_o_404(ibermon_id)
 
-    if numero_movimiento not in ibermon.movimientos_aprendidos:
+    movimiento = next((m for m in ibermon.movimientos_aprendidos if m.numero == numero_movimiento), None)
+    if movimiento is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="El ibermon no tiene ese movimiento"
         )
 
-    ibermon.movimientos_aprendidos.remove(numero_movimiento)
+    ibermon.movimientos_aprendidos = [
+        m for m in ibermon.movimientos_aprendidos if m.numero != numero_movimiento
+    ]
     await ibermon.save()

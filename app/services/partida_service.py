@@ -2,13 +2,17 @@ from fastapi import HTTPException, status
 
 from app.models.partida import Partida, Posicion
 from app.models.usuario import Usuario
-from app.models.ibermon_jugador import IbermonJugador
+from app.models.ibermon_jugador import IbermonJugador, MovimientoAprendido
 from app.models.item_jugador import ItemJugador
+from app.models.ibermon_catalogo import IbermonCatalogo
+from app.models.movimiento_catalogo import MovimientoCatalogo
 from app.schemas.partida_schema import (
     PartidaNuevaSchema,
     GuardarPartidaSchema,
     ActualizarPosicionSchema,
 )
+
+_NIVEL_STARTER = 5
 
 
 async def crear_partida(datos: PartidaNuevaSchema, usuario: Usuario) -> Partida:
@@ -20,6 +24,36 @@ async def crear_partida(datos: PartidaNuevaSchema, usuario: Usuario) -> Partida:
         posicion=Posicion(x=0, y=0),
     )
     await nueva_partida.insert()
+
+    # Crear el ibermon inicial en el equipo
+    catalogo = await IbermonCatalogo.find_one(IbermonCatalogo.numero == datos.starter_elegido)
+    if catalogo:
+        # Movimientos aprendibles hasta el nivel inicial, máximo 4
+        movs_disponibles = sorted(
+            [m for m in catalogo.movimientos_posibles if m.nivel <= _NIVEL_STARTER],
+            key=lambda m: m.nivel,
+        )[-4:]
+
+        movimientos = []
+        for mp in movs_disponibles:
+            mov_cat = await MovimientoCatalogo.find_one(MovimientoCatalogo.numero == mp.numero)
+            if mov_cat:
+                movimientos.append(MovimientoAprendido(numero=mp.numero, pp=mov_cat.pp))
+
+        # HP máximo a nivel _NIVEL_STARTER: floor(base_hp * nivel / 50) + nivel + 10
+        hp_inicial = (catalogo.stats_base.hp * _NIVEL_STARTER // 50) + _NIVEL_STARTER + 10
+
+        starter = IbermonJugador(
+            partida_id=nueva_partida.id,
+            ibermon_catalogo_id=datos.starter_elegido,
+            nivel=_NIVEL_STARTER,
+            hp_actual=hp_inicial,
+            ubicacion="equipo",
+            movimientos_aprendidos=movimientos,
+        )
+        await starter.insert()
+        nueva_partida.equipo.append(starter.id)
+        await nueva_partida.save()
 
     usuario.partidas.append(nueva_partida.id)
     await usuario.save()

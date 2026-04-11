@@ -14,6 +14,10 @@ class MovimientoCatalogoCrearSchema(BaseModel):
     pp: int
     descripcion: str
     efecto: Optional[str] = None
+    categoria: str = "Fisico"        # "Fisico", "Especial" o "Estado"
+    objetivo: str = "Foe"            # "Foe" o "Self"
+    siempre_acierta: bool = False
+    prioridad: int = 0
 
 
 # --- RESPONSE ---
@@ -37,3 +41,7 @@ class MovimientoCatalogoDetalleSchema(BaseModel):
     pp: int
     descripcion: str
     efecto: Optional[str] = None
+    categoria: str = "Fisico"
+    objetivo: str = "Foe"
+    siempre_acierta: bool = False
+    prioridad: int = 0

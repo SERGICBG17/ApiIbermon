@@ -35,7 +35,7 @@ async def main():
     await LogroCatalogo.delete_all()
     print("  logro_catalogo borrado")
 
-    print("Listo. Ahora ejecuta: python -m data.seed")
+    print("Listo. Ahora ejecuta: python -m app.utils.seed")
 
 
 if __name__ == "__main__":

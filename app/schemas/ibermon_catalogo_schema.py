@@ -1,8 +1,8 @@
-from pydantic import BaseModel
-from typing import List, Optional
+from pydantic import BaseModel, model_validator
+from typing import Any, List, Optional
 
 
-# --- SUBMODELO (solo en esquemas, no en el modelo) ---
+# --- SUBMODELOS ---
 
 class StatsBaseSchema(BaseModel):
     hp: int
@@ -11,6 +11,12 @@ class StatsBaseSchema(BaseModel):
     ataque_especial: int
     defensa_especial: int
     velocidad: int
+
+
+class MovimientoPosibleSchema(BaseModel):
+    """Movimiento que un ibermon puede aprender, con el nivel al que lo aprende."""
+    numero: int
+    nivel: int
 
 
 # --- REQUEST ---
@@ -23,10 +29,13 @@ class IbermonCatalogoCrearSchema(BaseModel):
     tipo2: Optional[str] = None
     descripcion: str
     stats_base: StatsBaseSchema           # se descompone al guardar en el modelo
-    movimientos_posibles: List[int] = []
+    movimientos_posibles: List[MovimientoPosibleSchema] = []
     evoluciona_a: Optional[int] = None
     nivel_evolucion: Optional[int] = None
     sprite: str
+    catch_rate: int = 255
+    exp_yield: int = 100
+    growth_rate: str = "Medio"
 
 
 # --- RESPONSE ---
@@ -53,7 +62,49 @@ class IbermonCatalogoDetalleSchema(BaseModel):
     ataque_especial_base: int
     defensa_especial_base: int
     velocidad_base: int
-    movimientos_posibles: List[int] = []
+    movimientos_posibles: List[MovimientoPosibleSchema] = []
     evoluciona_a: Optional[int] = None
     nivel_evolucion: Optional[int] = None
     sprite: str
+    catch_rate: int = 255
+    exp_yield: int = 100
+    growth_rate: str = "Medio"
+
+    @model_validator(mode="before")
+    @classmethod
+    def _flatten_stats_base(cls, data: Any) -> Any:
+        """Convierte stats_base anidado del modelo Beanie a campos planos del schema."""
+        # Documento Beanie (objeto con atributos)
+        if hasattr(data, "stats_base"):
+            s = data.stats_base
+            return {
+                "numero":               data.numero,
+                "nombre":               data.nombre,
+                "tipo1":                data.tipo1,
+                "tipo2":                data.tipo2,
+                "descripcion":          data.descripcion,
+                "hp_base":              s.hp,
+                "ataque_base":          s.ataque,
+                "defensa_base":         s.defensa,
+                "ataque_especial_base": s.ataque_especial,
+                "defensa_especial_base":s.defensa_especial,
+                "velocidad_base":       s.velocidad,
+                "movimientos_posibles": data.movimientos_posibles,
+                "evoluciona_a":         data.evoluciona_a,
+                "nivel_evolucion":      data.nivel_evolucion,
+                "sprite":               data.sprite,
+                "catch_rate":           data.catch_rate,
+                "exp_yield":            data.exp_yield,
+                "growth_rate":          data.growth_rate,
+            }
+        # Dict con stats_base anidado (ej: tests)
+        if isinstance(data, dict) and "stats_base" in data:
+            s = data.pop("stats_base")
+            if isinstance(s, dict):
+                data["hp_base"]               = s["hp"]
+                data["ataque_base"]           = s["ataque"]
+                data["defensa_base"]          = s["defensa"]
+                data["ataque_especial_base"]  = s["ataque_especial"]
+                data["defensa_especial_base"] = s["defensa_especial"]
+                data["velocidad_base"]        = s["velocidad"]
+        return data

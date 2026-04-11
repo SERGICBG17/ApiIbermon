@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status
 
-from app.models.ibermon_jugador import IbermonJugador
+from app.models.ibermon_jugador import IbermonJugador, MovimientoAprendido
 from app.models.usuario import Usuario
 from app.schemas.ibermon_jugador_schema import (
     IbermonJugadorCrearSchema,
@@ -83,7 +83,10 @@ async def actualizar_ibermon(ibermon_id: str, datos: IbermonJugadorActualizarSch
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Un ibermon solo puede tener 4 movimientos",
             )
-        ibermon.movimientos_aprendidos = datos.movimientos_aprendidos
+        ibermon.movimientos_aprendidos = [
+            MovimientoAprendido(numero=m.numero, pp=m.pp)
+            for m in datos.movimientos_aprendidos
+        ]
     if datos.nickname is not None:
         ibermon.nickname = datos.nickname
 
