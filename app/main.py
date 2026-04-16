@@ -6,7 +6,7 @@ from starlette.responses import HTMLResponse
 
 from app.core.config import settings
 from app.db.session import connect_db
-from app.routers import auth_router, partida_router, ibermon_jugador_router, catalogo_router, item_jugador_router
+from app.routers import auth_router, partida_router, ibermon_jugador_router, catalogo_router, item_jugador_router, chatbot_router
 
 
 @asynccontextmanager
@@ -42,6 +42,7 @@ app.include_router(partida_router.router)
 app.include_router(ibermon_jugador_router.router)
 app.include_router(item_jugador_router.router)
 app.include_router(catalogo_router.router)
+app.include_router(chatbot_router.router)
 
 
 @app.get("/", response_class=HTMLResponse)

@@ -22,3 +22,6 @@ pymongo==4.8.0
 
 # HTTP asíncrono (seed_pokeapi.py)
 httpx==0.27.2
+
+# Gemini (chatbot IberBot)
+google-genai
