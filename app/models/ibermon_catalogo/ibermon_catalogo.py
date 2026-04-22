@@ -1,20 +1,8 @@
 from beanie import Document
-from pydantic import BaseModel
 from typing import List, Optional
 
-
-class StatsBase(BaseModel):
-    hp: int
-    ataque: int
-    defensa: int
-    ataque_especial: int
-    defensa_especial: int
-    velocidad: int
-
-
-class MovimientoPosible(BaseModel):
-    numero: int   # ref a MovimientoCatalogo.numero
-    nivel: int    # nivel mínimo al que el ibermon aprende el movimiento
+from app.models.ibermon_catalogo.movimiento_posible import MovimientoPosible
+from app.models.ibermon_catalogo.stats_base import StatsBase
 
 
 class IbermonCatalogo(Document):

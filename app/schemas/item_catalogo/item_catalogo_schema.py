@@ -1,10 +1,6 @@
 from pydantic import BaseModel
-from typing import Any, Optional
 
-
-class EfectoItemSchema(BaseModel):
-    tipo_efecto: str
-    valor: Optional[Any] = None
+from app.schemas.item_catalogo.efecto_item_schema import EfectoItemSchema
 
 
 # --- REQUEST ---

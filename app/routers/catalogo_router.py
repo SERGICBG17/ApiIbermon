@@ -1,9 +1,9 @@
 from fastapi import APIRouter
 
 from app.services import catalogo_service
-from app.schemas.ibermon_catalogo_schema import IbermonCatalogoResumenSchema, IbermonCatalogoDetalleSchema
+from app.schemas.ibermon_catalogo.ibermon_catalogo_schema import IbermonCatalogoResumenSchema, IbermonCatalogoDetalleSchema
 from app.schemas.movimiento_catalogo_schema import MovimientoCatalogoResumenSchema, MovimientoCatalogoDetalleSchema
-from app.schemas.item_catalogo_schema import ItemCatalogoResumenSchema, ItemCatalogoDetalleSchema
+from app.schemas.item_catalogo.item_catalogo_schema import ItemCatalogoResumenSchema, ItemCatalogoDetalleSchema
 from app.schemas.logro_schema import LogroCatalogoSchema
 
 router = APIRouter(prefix="/catalogo", tags=["Catálogos Públicos"])

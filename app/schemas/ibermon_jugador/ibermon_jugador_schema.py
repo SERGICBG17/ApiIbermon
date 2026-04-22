@@ -1,13 +1,7 @@
 from pydantic import BaseModel
 from typing import List, Optional
 
-
-# --- SUBMODELO ---
-
-class MovimientoAprendidoSchema(BaseModel):
-    """Movimiento conocido por un ibermon del jugador, con sus PP actuales."""
-    numero: int
-    pp: int
+from app.schemas.ibermon_jugador.movimiento_aprendido_schema import MovimientoAprendidoSchema
 
 
 # --- REQUEST ---

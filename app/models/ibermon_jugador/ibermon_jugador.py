@@ -1,12 +1,7 @@
 from beanie import Document, PydanticObjectId
-from pydantic import BaseModel
 from typing import List, Optional
 
-
-class MovimientoAprendido(BaseModel):
-    numero: int   # ref a MovimientoCatalogo.numero
-    pp: int       # PP actuales restantes del movimiento
-
+from app.models.ibermon_jugador.movimiento_aprendido import MovimientoAprendido
 
 class IbermonJugador(Document):
     partida_id: PydanticObjectId

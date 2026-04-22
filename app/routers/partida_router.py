@@ -1,17 +1,17 @@
 from fastapi import APIRouter, Depends
 
-from app.schemas.partida_schema import (
+from app.schemas.partida.partida_schema import (
     PartidaNuevaSchema,
     GuardarPartidaSchema,
     ActualizarPosicionSchema,
     PartidaResumenSchema,
     PartidaCompletaSchema,
-    PosicionSchema,
+    PosicionSchema, ElegirStarterSchema,
 )
 from app.services import partida_service
 from app.core.security import get_current_user
 from app.models.usuario import Usuario
-from app.models.partida import Partida
+from app.models.partida.partida import Partida
 
 
 def partida_to_completa(p: Partida) -> PartidaCompletaSchema:
@@ -24,6 +24,8 @@ def partida_to_completa(p: Partida) -> PartidaCompletaSchema:
         posicion=PosicionSchema(x=p.posicion.x, y=p.posicion.y),
         dinero=p.dinero,
         tiempo_jugado=p.tiempo_jugado,
+        fecha_creacion=p.fecha_creacion,
+        ultima_conexion=p.ultima_conexion,
         equipo=[str(e) for e in p.equipo],
         centro_ibermon=[str(c) for c in p.centro_ibermon],
         pokedex_visto=p.pokedex_visto,
@@ -39,12 +41,15 @@ def partida_to_completa(p: Partida) -> PartidaCompletaSchema:
 def partida_to_resumen(p: Partida) -> PartidaResumenSchema:
     return PartidaResumenSchema(
         id=str(p.id),
+        nombre=p.nombre,
         personaje_elegido=p.personaje_elegido,
         mapa_actual=p.mapa_actual,
         tiempo_jugado=p.tiempo_jugado,
         medallas=p.medallas,
         combates_ganados=p.combates_ganados,
         combates_perdidos=p.combates_perdidos,
+        fecha_creacion=p.fecha_creacion,
+        ultima_conexion=p.ultima_conexion,
     )
 
 
@@ -56,6 +61,14 @@ async def nueva_partida(datos: PartidaNuevaSchema, usuario: Usuario = Depends(ge
     partida = await partida_service.crear_partida(datos, usuario)
     return partida_to_completa(partida)
 
+@router.post("/{partida_id}/starter", status_code=200)
+async def elegir_starter(
+        partida_id: str,
+        datos: ElegirStarterSchema,
+        usuario: Usuario = Depends(get_current_user)
+):
+    partida = await partida_service.elegir_starter(partida_id, datos.starter_elegido, usuario)
+    return partida_to_completa(partida)
 
 @router.get("/")
 async def listar_partidas(usuario: Usuario = Depends(get_current_user)):

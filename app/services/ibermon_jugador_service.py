@@ -1,8 +1,8 @@
 from fastapi import HTTPException, status
 
-from app.models.ibermon_jugador import IbermonJugador, MovimientoAprendido
+from app.models.ibermon_jugador.ibermon_jugador import IbermonJugador, MovimientoAprendido
 from app.models.usuario import Usuario
-from app.schemas.ibermon_jugador_schema import (
+from app.schemas.ibermon_jugador.ibermon_jugador_schema import (
     IbermonJugadorCrearSchema,
     IbermonJugadorMoverSchema,
     IbermonJugadorActualizarSchema,

@@ -1,12 +1,14 @@
+from datetime import datetime, timezone
+
 from fastapi import HTTPException, status
 
-from app.models.partida import Partida, Posicion
+from app.models.partida.partida import Partida, Posicion
 from app.models.usuario import Usuario
-from app.models.ibermon_jugador import IbermonJugador, MovimientoAprendido
+from app.models.ibermon_jugador.ibermon_jugador import IbermonJugador, MovimientoAprendido
 from app.models.item_jugador import ItemJugador
-from app.models.ibermon_catalogo import IbermonCatalogo
+from app.models.ibermon_catalogo.ibermon_catalogo import IbermonCatalogo
 from app.models.movimiento_catalogo import MovimientoCatalogo
-from app.schemas.partida_schema import (
+from app.schemas.partida.partida_schema import (
     PartidaNuevaSchema,
     GuardarPartidaSchema,
     ActualizarPosicionSchema,
@@ -18,47 +20,57 @@ _NIVEL_STARTER = 5
 async def crear_partida(datos: PartidaNuevaSchema, usuario: Usuario) -> Partida:
     nueva_partida = Partida(
         usuario_id=usuario.id,
+        nombre=datos.nombre,
         personaje_elegido=datos.personaje_elegido,
-        starter_elegido=datos.starter_elegido,
         mapa_actual="CasaPersonaje",
         posicion=Posicion(x=7.008884, y=6.872112),
+        fecha_creacion=datos.fecha_creacion or datetime.now(timezone.utc),
+        ultima_conexion=datetime.now(timezone.utc),
     )
     await nueva_partida.insert()
 
-    # Crear el ibermon inicial en el equipo
-    catalogo = await IbermonCatalogo.find_one(IbermonCatalogo.numero == datos.starter_elegido)
-    if catalogo:
-        # Movimientos aprendibles hasta el nivel inicial, máximo 4
-        movs_disponibles = sorted(
-            [m for m in catalogo.movimientos_posibles if m.nivel <= _NIVEL_STARTER],
-            key=lambda m: m.nivel,
-        )[-4:]
-
-        movimientos = []
-        for mp in movs_disponibles:
-            mov_cat = await MovimientoCatalogo.find_one(MovimientoCatalogo.numero == mp.numero)
-            if mov_cat:
-                movimientos.append(MovimientoAprendido(numero=mp.numero, pp=mov_cat.pp))
-
-        # HP máximo a nivel _NIVEL_STARTER: floor(base_hp * nivel / 50) + nivel + 10
-        hp_inicial = (catalogo.stats_base.hp * _NIVEL_STARTER // 50) + _NIVEL_STARTER + 10
-
-        starter = IbermonJugador(
-            partida_id=nueva_partida.id,
-            ibermon_catalogo_id=datos.starter_elegido,
-            nivel=_NIVEL_STARTER,
-            hp_actual=hp_inicial,
-            ubicacion="equipo",
-            movimientos_aprendidos=movimientos,
-        )
-        await starter.insert()
-        nueva_partida.equipo.append(starter.id)
-        await nueva_partida.save()
-
     usuario.partidas.append(nueva_partida.id)
     await usuario.save()
-
     return nueva_partida
+
+
+async def elegir_starter(partida_id: str, starter_numero: int, usuario: Usuario) -> Partida:
+    partida = await obtener_partida_por_id(partida_id, usuario)
+
+    if partida.starter_elegido is not None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Ya tienes un starter")
+
+    catalogo = await IbermonCatalogo.find_one(IbermonCatalogo.numero == starter_numero)
+    if not catalogo:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Starter no encontrado")
+
+    movs_disponibles = sorted(
+        [m for m in catalogo.movimientos_posibles if m.nivel <= _NIVEL_STARTER],
+        key=lambda m: m.nivel,
+    )[-4:]
+
+    movimientos = []
+    for mp in movs_disponibles:
+        mov_cat = await MovimientoCatalogo.find_one(MovimientoCatalogo.numero == mp.numero)
+        if mov_cat:
+            movimientos.append(MovimientoAprendido(numero=mp.numero, pp=mov_cat.pp))
+
+    hp_inicial = (catalogo.stats_base.hp * _NIVEL_STARTER // 50) + _NIVEL_STARTER + 10
+
+    starter = IbermonJugador(
+        partida_id=partida.id,
+        ibermon_catalogo_id=starter_numero,
+        nivel=_NIVEL_STARTER,
+        hp_actual=hp_inicial,
+        ubicacion="equipo",
+        movimientos_aprendidos=movimientos,
+    )
+    await starter.insert()
+
+    partida.starter_elegido = starter_numero
+    partida.equipo.append(starter.id)
+    await partida.save()
+    return partida
 
 
 async def obtener_partidas_usuario(usuario: Usuario) -> list[Partida]:

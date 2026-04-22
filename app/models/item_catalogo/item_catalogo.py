@@ -1,11 +1,6 @@
 from beanie import Document
-from pydantic import BaseModel
-from typing import Any, Optional
 
-class EfectoItem(BaseModel):
-    tipo_efecto: str                  # "curacion", "captura", "subida_stat", etc
-    valor: Optional[Any] = None       # cantidad curada, bonus de captura, etc
-
+from app.models.item_catalogo.efecto_item import EfectoItem
 
 class ItemCatalogo(Document):
     numero: int                       # PK

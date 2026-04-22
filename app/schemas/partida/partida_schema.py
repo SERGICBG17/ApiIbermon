@@ -1,21 +1,17 @@
 from pydantic import BaseModel
-from typing import List, Dict, Optional
+from typing import List, Dict
+from datetime import datetime
 
-
-# --- SUBMODELOS ---
-
-class PosicionSchema(BaseModel):
-    x: float
-    y: float
-
-
-# --- REQUEST ---
+from app.schemas.partida.posicion_schema import PosicionSchema
 
 class PartidaNuevaSchema(BaseModel):
     """Datos para crear una nueva partida."""
+    nombre: str
     personaje_elegido: str
-    starter_elegido: int
+    fecha_creacion: datetime |None=datetime.now()
 
+class ElegirStarterSchema(BaseModel):
+    starter_elegido: int
 
 class GuardarPartidaSchema(BaseModel):
     """Datos para guardar el estado completo de la partida."""
@@ -23,6 +19,7 @@ class GuardarPartidaSchema(BaseModel):
     posicion: PosicionSchema
     dinero: int
     tiempo_jugado: int
+    ultima_conexion: datetime |None=datetime.now()
     pokedex_visto: List[int] = []
     pokedex_capturado: List[int] = []
     medallas: List[str] = []
@@ -38,17 +35,18 @@ class ActualizarPosicionSchema(BaseModel):
     posicion: PosicionSchema
 
 
-# --- RESPONSE ---
-
 class PartidaResumenSchema(BaseModel):
     """Resumen de una partida para listarlas."""
     id: str
+    nombre: str
     personaje_elegido: str
     mapa_actual: str
     tiempo_jugado: int
     medallas: List[str] = []
     combates_ganados: int
     combates_perdidos: int
+    fecha_creacion: datetime | None = None
+    ultima_conexion: datetime | None = None
 
 
 class PartidaCompletaSchema(BaseModel):
@@ -56,11 +54,13 @@ class PartidaCompletaSchema(BaseModel):
     id: str
     usuario_id: str
     personaje_elegido: str
-    starter_elegido: int
+    starter_elegido: int | None = None
     mapa_actual: str
     posicion: PosicionSchema
     dinero: int
     tiempo_jugado: int
+    fecha_creacion: datetime
+    ultima_conexion: datetime
     equipo: List[str] = []
     centro_ibermon: List[str] = []
     pokedex_visto: List[int] = []

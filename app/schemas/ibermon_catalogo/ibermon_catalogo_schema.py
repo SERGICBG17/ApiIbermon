@@ -1,22 +1,8 @@
 from pydantic import BaseModel, model_validator
 from typing import Any, List, Optional
 
-
-# --- SUBMODELOS ---
-
-class StatsBaseSchema(BaseModel):
-    hp: int
-    ataque: int
-    defensa: int
-    ataque_especial: int
-    defensa_especial: int
-    velocidad: int
-
-
-class MovimientoPosibleSchema(BaseModel):
-    """Movimiento que un ibermon puede aprender, con el nivel al que lo aprende."""
-    numero: int
-    nivel: int
+from app.schemas.ibermon_catalogo.movimiento_posible_schema import MovimientoPosibleSchema
+from app.schemas.ibermon_catalogo.stats_base import StatsBaseSchema
 
 
 # --- REQUEST ---

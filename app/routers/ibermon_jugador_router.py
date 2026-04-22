@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from app.schemas.ibermon_jugador_schema import (
+from app.schemas.ibermon_jugador.ibermon_jugador_schema import (
     IbermonJugadorCrearSchema,
     IbermonJugadorMoverSchema,
     IbermonJugadorActualizarSchema,
@@ -10,7 +10,7 @@ from app.schemas.ibermon_jugador_schema import (
 from app.services import ibermon_jugador_service
 from app.core.security import get_current_user
 from app.models.usuario import Usuario
-from app.models.ibermon_jugador import IbermonJugador, MovimientoAprendido
+from app.models.ibermon_jugador.ibermon_jugador import IbermonJugador, MovimientoAprendido
 from app.models.movimiento_catalogo import MovimientoCatalogo
 
 

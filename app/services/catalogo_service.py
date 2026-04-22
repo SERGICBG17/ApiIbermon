@@ -1,8 +1,8 @@
 from fastapi import HTTPException, status
 
-from app.models.ibermon_catalogo import IbermonCatalogo
+from app.models.ibermon_catalogo.ibermon_catalogo import IbermonCatalogo
 from app.models.movimiento_catalogo import MovimientoCatalogo
-from app.models.item_catalogo import ItemCatalogo
+from app.models.item_catalogo.item_catalogo import ItemCatalogo
 from app.models.logro_catalogo import LogroCatalogo
 
 
