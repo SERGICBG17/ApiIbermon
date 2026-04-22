@@ -20,8 +20,8 @@ async def crear_partida(datos: PartidaNuevaSchema, usuario: Usuario) -> Partida:
         usuario_id=usuario.id,
         personaje_elegido=datos.personaje_elegido,
         starter_elegido=datos.starter_elegido,
-        mapa_actual="ciudad_inicial",
-        posicion=Posicion(x=0, y=0),
+        mapa_actual="CasaPersonaje",
+        posicion=Posicion(x=7.008884, y=6.872112),
     )
     await nueva_partida.insert()
 
