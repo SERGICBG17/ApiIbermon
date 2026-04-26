@@ -109,6 +109,8 @@ async def actualizar_posicion(partida_id: str, datos: ActualizarPosicionSchema, 
     partida = await obtener_partida_por_id(partida_id, usuario)
     partida.mapa_actual = datos.mapa_actual
     partida.posicion = Posicion(x=datos.posicion.x, y=datos.posicion.y)
+    partida.tiempo_jugado = datos.tiempo_jugado
+    partida.ultima_conexion = datos.ultima_conexion or datetime.now(timezone.utc)
     await partida.save()
     return partida
 

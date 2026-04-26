@@ -30,9 +30,11 @@ class GuardarPartidaSchema(BaseModel):
 
 
 class ActualizarPosicionSchema(BaseModel):
-    """Actualiza solo la posicion y el mapa actual."""
+    """Actualiza solo la posicion, el mapa actual, el tiempo jugado y la ultima conexion."""
     mapa_actual: str
     posicion: PosicionSchema
+    tiempo_jugado: int
+    ultima_conexion: datetime | None = None
 
 
 class PartidaResumenSchema(BaseModel):
