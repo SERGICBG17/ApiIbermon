@@ -23,7 +23,7 @@ async def crear_partida(datos: PartidaNuevaSchema, usuario: Usuario) -> Partida:
         nombre=datos.nombre,
         personaje_elegido=datos.personaje_elegido,
         mapa_actual="CasaPersonaje",
-        posicion=Posicion(x=7.008884, y=6.872112),
+        posicion=Posicion(x=-7.008884, y=6.872112),
         fecha_creacion=datos.fecha_creacion or datetime.now(timezone.utc),
         ultima_conexion=datetime.now(timezone.utc),
     )
