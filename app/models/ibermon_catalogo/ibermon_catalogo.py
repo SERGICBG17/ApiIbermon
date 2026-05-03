@@ -15,7 +15,8 @@ class IbermonCatalogo(Document):
     movimientos_posibles: List[MovimientoPosible] = []
     evoluciona_a: Optional[int] = None               # numero del ibermon al que evoluciona
     nivel_evolucion: Optional[int] = None            # None si evoluciona por piedra u otro metodo
-    sprite: str                                      # nombre del asset en Unity ej: "sprite_ibermon_001"
+    sprite_frontal: str                              # ruta del sprite frontal. en Unity: frontSprite
+    sprite_trasero: str                              # ruta del sprite trasero. en Unity: backSprite
     catch_rate: int = 255                            # tasa de captura (0-255)
     exp_yield: int = 100                             # experiencia base que da al ser derrotado
     growth_rate: str = "Medio"                       # curva de crecimiento: "Medio" o "Rapido"

@@ -175,9 +175,9 @@ def move_short_effect(move: dict) -> Optional[str]:
     return text or None
 
 
-def get_sprite(pokemon: dict) -> str:
+def get_sprite_frontal(pokemon: dict) -> str:
     """
-    Prioridad de sprite:
+    Prioridad de sprite frontal:
       1. Gen V BW animated front_default (.gif)
       2. Gen V BW static front_default (.png)
       3. Official artwork front_default
@@ -200,6 +200,26 @@ def get_sprite(pokemon: dict) -> str:
     except (KeyError, TypeError):
         pass
     return pokemon.get("sprites", {}).get("front_default") or ""
+
+
+def get_sprite_trasero(pokemon: dict) -> str:
+    """
+    Prioridad de sprite trasero:
+      1. Gen V BW animated back_default (.gif)
+      2. Gen V BW static back_default (.png)
+      3. sprites.back_default (fallback)
+    """
+    try:
+        bw = pokemon["sprites"]["versions"]["generation-v"]["black-white"]
+        anim = (bw.get("animated") or {}).get("back_default")
+        if anim:
+            return anim
+        static = bw.get("back_default")
+        if static:
+            return static
+    except (KeyError, TypeError):
+        pass
+    return pokemon.get("sprites", {}).get("back_default") or ""
 
 
 def get_level_up_moves(pokemon: dict) -> List[Tuple[int, int]]:
@@ -331,7 +351,8 @@ def build_ibermon_doc(
             movimientos_posibles = movs,
             evoluciona_a     = evoluciona_a,
             nivel_evolucion  = nivel_evolucion,
-            sprite           = get_sprite(pokemon),
+            sprite_frontal   = get_sprite_frontal(pokemon),
+            sprite_trasero   = get_sprite_trasero(pokemon),
             catch_rate       = species.get("capture_rate",      255),
             exp_yield        = pokemon.get("base_experience") or 100,
             growth_rate      = GROWTH_MAP.get(

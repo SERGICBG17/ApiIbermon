@@ -12,6 +12,7 @@ class IbermonJugadorCrearSchema(BaseModel):
     nickname: Optional[str] = None
     nivel: int = 1
     hp_actual: int
+    hp_maximo: int
     ubicacion: str = "equipo"         # por defecto va al equipo
 
 
@@ -25,6 +26,7 @@ class IbermonJugadorActualizarSchema(BaseModel):
     nivel: Optional[int] = None
     experiencia: Optional[int] = None
     hp_actual: Optional[int] = None
+    hp_maximo: Optional[int] = None
     movimientos_aprendidos: Optional[List[MovimientoAprendidoSchema]] = None
     nickname: Optional[str] = None
 
@@ -40,5 +42,6 @@ class IbermonJugadorSchema(BaseModel):
     nivel: int
     experiencia: int
     hp_actual: int
+    hp_maximo: int
     ubicacion: str
     movimientos_aprendidos: List[MovimientoAprendidoSchema] = []

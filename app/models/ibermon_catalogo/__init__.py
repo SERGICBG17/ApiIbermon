@@ -1,0 +1,3 @@
+from app.models.ibermon_catalogo.ibermon_catalogo import IbermonCatalogo
+from app.models.ibermon_catalogo.stats_base import StatsBase
+from app.models.ibermon_catalogo.movimiento_posible import MovimientoPosible

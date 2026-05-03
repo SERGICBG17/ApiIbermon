@@ -32,6 +32,7 @@ async def anadir_ibermon(partida_id: str, datos: IbermonJugadorCrearSchema, usua
         nickname=datos.nickname,
         nivel=datos.nivel,
         hp_actual=datos.hp_actual,
+        hp_maximo=datos.hp_maximo,
         ubicacion=datos.ubicacion,
     )
     await nuevo.insert()
@@ -77,6 +78,8 @@ async def actualizar_ibermon(ibermon_id: str, datos: IbermonJugadorActualizarSch
         ibermon.experiencia = datos.experiencia
     if datos.hp_actual is not None:
         ibermon.hp_actual = datos.hp_actual
+    if datos.hp_maximo is not None:
+        ibermon.hp_maximo = datos.hp_maximo
     if datos.movimientos_aprendidos is not None:
         if len(datos.movimientos_aprendidos) > 4:
             raise HTTPException(

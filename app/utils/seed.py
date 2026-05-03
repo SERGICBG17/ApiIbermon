@@ -60,7 +60,7 @@ IBERMON = [
         "descripcion": "Lleva una semilla en su espalda desde que nace. La semilla crece poco a poco.",
         "stats_base": {"hp": 45, "ataque": 49, "defensa": 49, "ataque_especial": 65, "defensa_especial": 65, "velocidad": 45},
         "movimientos_posibles": [{"numero": 1, "nivel": 1}, {"numero": 3, "nivel": 1}, {"numero": 14, "nivel": 7}, {"numero": 17, "nivel": 13}],
-        "evoluciona_a": 2, "nivel_evolucion": 16, "sprite": "sprite_ibermon_001",
+        "evoluciona_a": 2, "nivel_evolucion": 16, "sprite_frontal": "1.png", "sprite_trasero": "back/1.png",
         "catch_rate": 45, "exp_yield": 64, "growth_rate": "Medio",
     },
     {
@@ -68,7 +68,7 @@ IBERMON = [
         "descripcion": "La semilla de su espalda absorbe la luz solar y crece. Su aroma calma las emociones.",
         "stats_base": {"hp": 60, "ataque": 62, "defensa": 63, "ataque_especial": 80, "defensa_especial": 80, "velocidad": 60},
         "movimientos_posibles": [{"numero": 1, "nivel": 1}, {"numero": 14, "nivel": 1}, {"numero": 15, "nivel": 22}, {"numero": 17, "nivel": 29}],
-        "evoluciona_a": 3, "nivel_evolucion": 32, "sprite": "sprite_ibermon_002",
+        "evoluciona_a": 3, "nivel_evolucion": 32, "sprite_frontal": "2.png", "sprite_trasero": "back/2.png",
         "catch_rate": 45, "exp_yield": 141, "growth_rate": "Medio",
     },
     {
@@ -76,7 +76,7 @@ IBERMON = [
         "descripcion": "La flor de su espalda absorbe la luz solar. Su aroma tranquiliza y sana.",
         "stats_base": {"hp": 80, "ataque": 82, "defensa": 83, "ataque_especial": 100, "defensa_especial": 100, "velocidad": 80},
         "movimientos_posibles": [{"numero": 1, "nivel": 1}, {"numero": 15, "nivel": 1}, {"numero": 17, "nivel": 1}, {"numero": 16, "nivel": 40}],
-        "evoluciona_a": None, "nivel_evolucion": None, "sprite": "sprite_ibermon_003",
+        "evoluciona_a": None, "nivel_evolucion": None, "sprite_frontal": "3.png", "sprite_trasero": "back/3.png",
         "catch_rate": 45, "exp_yield": 236, "growth_rate": "Medio",
     },
     # ── Charmander line ─────────────────────────────────────────────────────────
@@ -85,7 +85,7 @@ IBERMON = [
         "descripcion": "La llama de su cola indica su estado de animo. Arde con mas fuerza en combate.",
         "stats_base": {"hp": 39, "ataque": 52, "defensa": 43, "ataque_especial": 60, "defensa_especial": 50, "velocidad": 65},
         "movimientos_posibles": [{"numero": 2, "nivel": 1}, {"numero": 3, "nivel": 1}, {"numero": 6, "nivel": 9}, {"numero": 7, "nivel": 15}],
-        "evoluciona_a": 5, "nivel_evolucion": 16, "sprite": "sprite_ibermon_004",
+        "evoluciona_a": 5, "nivel_evolucion": 16, "sprite_frontal": "4.png", "sprite_trasero": "back/4.png",
         "catch_rate": 45, "exp_yield": 62, "growth_rate": "Medio",
     },
     {
@@ -93,7 +93,7 @@ IBERMON = [
         "descripcion": "Muy agresivo. Cuando siente un rival poderoso, la llama de su cola crece intensamente.",
         "stats_base": {"hp": 58, "ataque": 64, "defensa": 58, "ataque_especial": 80, "defensa_especial": 65, "velocidad": 80},
         "movimientos_posibles": [{"numero": 2, "nivel": 1}, {"numero": 6, "nivel": 1}, {"numero": 7, "nivel": 20}, {"numero": 8, "nivel": 30}],
-        "evoluciona_a": 6, "nivel_evolucion": 36, "sprite": "sprite_ibermon_005",
+        "evoluciona_a": 6, "nivel_evolucion": 36, "sprite_frontal": "5.png", "sprite_trasero": "back/5.png",
         "catch_rate": 45, "exp_yield": 142, "growth_rate": "Medio",
     },
     {
@@ -101,7 +101,7 @@ IBERMON = [
         "descripcion": "Escupe fuego que derrite cualquier cosa. Vuela buscando rivales dignos de combatir.",
         "stats_base": {"hp": 78, "ataque": 84, "defensa": 78, "ataque_especial": 109, "defensa_especial": 85, "velocidad": 100},
         "movimientos_posibles": [{"numero": 2, "nivel": 1}, {"numero": 6, "nivel": 1}, {"numero": 8, "nivel": 1}, {"numero": 9, "nivel": 42}],
-        "evoluciona_a": None, "nivel_evolucion": None, "sprite": "sprite_ibermon_006",
+        "evoluciona_a": None, "nivel_evolucion": None, "sprite_frontal": "6.png", "sprite_trasero": "back/6.png",
         "catch_rate": 45, "exp_yield": 240, "growth_rate": "Medio",
     },
     # ── Squirtle line ────────────────────────────────────────────────────────────
@@ -110,7 +110,7 @@ IBERMON = [
         "descripcion": "Cuando retrae su cuello en el caparazon, rocía agua con gran precision.",
         "stats_base": {"hp": 44, "ataque": 48, "defensa": 65, "ataque_especial": 50, "defensa_especial": 64, "velocidad": 43},
         "movimientos_posibles": [{"numero": 1, "nivel": 1}, {"numero": 4, "nivel": 1}, {"numero": 10, "nivel": 7}, {"numero": 11, "nivel": 13}],
-        "evoluciona_a": 8, "nivel_evolucion": 16, "sprite": "sprite_ibermon_007",
+        "evoluciona_a": 8, "nivel_evolucion": 16, "sprite_frontal": "7.png", "sprite_trasero": "back/7.png",
         "catch_rate": 45, "exp_yield": 63, "growth_rate": "Medio",
     },
     {
@@ -118,7 +118,7 @@ IBERMON = [
         "descripcion": "Su larga cola peluda indica longevidad. Puede esconder todo su cuerpo en el caparazon.",
         "stats_base": {"hp": 59, "ataque": 63, "defensa": 80, "ataque_especial": 65, "defensa_especial": 80, "velocidad": 58},
         "movimientos_posibles": [{"numero": 1, "nivel": 1}, {"numero": 10, "nivel": 1}, {"numero": 11, "nivel": 17}, {"numero": 13, "nivel": 28}],
-        "evoluciona_a": 9, "nivel_evolucion": 36, "sprite": "sprite_ibermon_008",
+        "evoluciona_a": 9, "nivel_evolucion": 36, "sprite_frontal": "8.png", "sprite_trasero": "back/8.png",
         "catch_rate": 45, "exp_yield": 142, "growth_rate": "Medio",
     },
     {
@@ -126,7 +126,7 @@ IBERMON = [
         "descripcion": "Los canones de agua de su caparazon disparan proyectiles con enorme precision.",
         "stats_base": {"hp": 79, "ataque": 83, "defensa": 100, "ataque_especial": 85, "defensa_especial": 105, "velocidad": 78},
         "movimientos_posibles": [{"numero": 1, "nivel": 1}, {"numero": 10, "nivel": 1}, {"numero": 13, "nivel": 1}, {"numero": 12, "nivel": 44}],
-        "evoluciona_a": None, "nivel_evolucion": None, "sprite": "sprite_ibermon_009",
+        "evoluciona_a": None, "nivel_evolucion": None, "sprite_frontal": "9.png", "sprite_trasero": "back/9.png",
         "catch_rate": 45, "exp_yield": 239, "growth_rate": "Medio",
     },
     {
@@ -134,7 +134,7 @@ IBERMON = [
         "descripcion": "Ibermon electrico comun. Sus mejillas almacenan electricidad.",
         "stats_base": {"hp": 35, "ataque": 55, "defensa": 40, "ataque_especial": 50, "defensa_especial": 50, "velocidad": 90},
         "movimientos_posibles": [{"numero": 1, "nivel": 1}, {"numero": 5, "nivel": 5}, {"numero": 18, "nivel": 9}, {"numero": 20, "nivel": 26}],
-        "evoluciona_a": 11, "nivel_evolucion": 22, "sprite": "sprite_ibermon_010",
+        "evoluciona_a": 11, "nivel_evolucion": 22, "sprite_frontal": "10.png", "sprite_trasero": "back/10.png",
         "catch_rate": 190, "exp_yield": 82, "growth_rate": "Rapido",
     },
     {
@@ -142,7 +142,7 @@ IBERMON = [
         "descripcion": "Evolucion de Chispon. Genera electricidad al correr.",
         "stats_base": {"hp": 60, "ataque": 90, "defensa": 55, "ataque_especial": 90, "defensa_especial": 80, "velocidad": 110},
         "movimientos_posibles": [{"numero": 5, "nivel": 1}, {"numero": 18, "nivel": 1}, {"numero": 20, "nivel": 1}, {"numero": 19, "nivel": 44}],
-        "evoluciona_a": None, "nivel_evolucion": None, "sprite": "sprite_ibermon_011",
+        "evoluciona_a": None, "nivel_evolucion": None, "sprite_frontal": "11.png", "sprite_trasero": "back/11.png",
         "catch_rate": 75, "exp_yield": 172, "growth_rate": "Rapido",
     },
     {
@@ -150,7 +150,7 @@ IBERMON = [
         "descripcion": "Pequeno ibermon insecto. Muy debil pero facil de encontrar.",
         "stats_base": {"hp": 45, "ataque": 30, "defensa": 35, "ataque_especial": 20, "defensa_especial": 20, "velocidad": 45},
         "movimientos_posibles": [{"numero": 1, "nivel": 1}, {"numero": 2, "nivel": 1}, {"numero": 3, "nivel": 5}],
-        "evoluciona_a": 13, "nivel_evolucion": 7, "sprite": "sprite_ibermon_012",
+        "evoluciona_a": 13, "nivel_evolucion": 7, "sprite_frontal": "12.png", "sprite_trasero": "back/12.png",
         "catch_rate": 255, "exp_yield": 39, "growth_rate": "Rapido",
     },
     {
@@ -158,7 +158,7 @@ IBERMON = [
         "descripcion": "Crisalida de Gusanin. Endurece su caparazon.",
         "stats_base": {"hp": 50, "ataque": 35, "defensa": 55, "ataque_especial": 25, "defensa_especial": 25, "velocidad": 30},
         "movimientos_posibles": [{"numero": 1, "nivel": 1}, {"numero": 4, "nivel": 1}],
-        "evoluciona_a": 14, "nivel_evolucion": 10, "sprite": "sprite_ibermon_013",
+        "evoluciona_a": 14, "nivel_evolucion": 10, "sprite_frontal": "13.png", "sprite_trasero": "back/13.png",
         "catch_rate": 120, "exp_yield": 72, "growth_rate": "Rapido",
     },
     {
@@ -166,7 +166,7 @@ IBERMON = [
         "descripcion": "Forma final de Gusanin. Sus alas brillan con polvo magico.",
         "stats_base": {"hp": 60, "ataque": 45, "defensa": 50, "ataque_especial": 80, "defensa_especial": 80, "velocidad": 70},
         "movimientos_posibles": [{"numero": 1, "nivel": 1}, {"numero": 5, "nivel": 1}, {"numero": 15, "nivel": 12}, {"numero": 17, "nivel": 17}],
-        "evoluciona_a": None, "nivel_evolucion": None, "sprite": "sprite_ibermon_014",
+        "evoluciona_a": None, "nivel_evolucion": None, "sprite_frontal": "14.png", "sprite_trasero": "back/14.png",
         "catch_rate": 45, "exp_yield": 178, "growth_rate": "Rapido",
     },
     {
@@ -174,7 +174,7 @@ IBERMON = [
         "descripcion": "Ibermon de roca. Muy lento pero extremadamente resistente.",
         "stats_base": {"hp": 40, "ataque": 80, "defensa": 100, "ataque_especial": 30, "defensa_especial": 30, "velocidad": 20},
         "movimientos_posibles": [{"numero": 1, "nivel": 1}, {"numero": 3, "nivel": 1}, {"numero": 4, "nivel": 11}],
-        "evoluciona_a": 16, "nivel_evolucion": 25, "sprite": "sprite_ibermon_015",
+        "evoluciona_a": 16, "nivel_evolucion": 25, "sprite_frontal": "15.png", "sprite_trasero": "back/15.png",
         "catch_rate": 255, "exp_yield": 58, "growth_rate": "Medio",
     },
     {
@@ -182,7 +182,7 @@ IBERMON = [
         "descripcion": "Evolucion de Rocin. Su cuerpo es tan duro como el diamante.",
         "stats_base": {"hp": 80, "ataque": 120, "defensa": 130, "ataque_especial": 55, "defensa_especial": 65, "velocidad": 30},
         "movimientos_posibles": [{"numero": 1, "nivel": 1}, {"numero": 3, "nivel": 1}, {"numero": 4, "nivel": 1}, {"numero": 5, "nivel": 32}],
-        "evoluciona_a": None, "nivel_evolucion": None, "sprite": "sprite_ibermon_016",
+        "evoluciona_a": None, "nivel_evolucion": None, "sprite_frontal": "16.png", "sprite_trasero": "back/16.png",
         "catch_rate": 45, "exp_yield": 171, "growth_rate": "Medio",
     },
 ]

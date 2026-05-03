@@ -62,6 +62,7 @@ async def elegir_starter(partida_id: str, starter_numero: int, usuario: Usuario)
         ibermon_catalogo_id=starter_numero,
         nivel=_NIVEL_STARTER,
         hp_actual=hp_inicial,
+        hp_maximo=hp_inicial,
         ubicacion="equipo",
         movimientos_aprendidos=movimientos,
     )

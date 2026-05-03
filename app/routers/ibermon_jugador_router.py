@@ -23,6 +23,7 @@ def ibermon_to_schema(ib: IbermonJugador) -> IbermonJugadorSchema:
         nivel=ib.nivel,
         experiencia=ib.experiencia,
         hp_actual=ib.hp_actual,
+        hp_maximo=ib.hp_maximo,
         ubicacion=ib.ubicacion,
         movimientos_aprendidos=[
             MovimientoAprendidoSchema(numero=m.numero, pp=m.pp)

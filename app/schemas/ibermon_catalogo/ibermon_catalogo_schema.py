@@ -18,7 +18,8 @@ class IbermonCatalogoCrearSchema(BaseModel):
     movimientos_posibles: List[MovimientoPosibleSchema] = []
     evoluciona_a: Optional[int] = None
     nivel_evolucion: Optional[int] = None
-    sprite: str
+    sprite_frontal: str
+    sprite_trasero: str
     catch_rate: int = 255
     exp_yield: int = 100
     growth_rate: str = "Medio"
@@ -32,7 +33,8 @@ class IbermonCatalogoResumenSchema(BaseModel):
     nombre: str
     tipo1: str
     tipo2: Optional[str] = None
-    sprite: str
+    sprite_frontal: str
+    sprite_trasero: str
 
 
 class IbermonCatalogoDetalleSchema(BaseModel):
@@ -51,7 +53,8 @@ class IbermonCatalogoDetalleSchema(BaseModel):
     movimientos_posibles: List[MovimientoPosibleSchema] = []
     evoluciona_a: Optional[int] = None
     nivel_evolucion: Optional[int] = None
-    sprite: str
+    sprite_frontal: str
+    sprite_trasero: str
     catch_rate: int = 255
     exp_yield: int = 100
     growth_rate: str = "Medio"
@@ -78,7 +81,8 @@ class IbermonCatalogoDetalleSchema(BaseModel):
                 "movimientos_posibles": data.movimientos_posibles,
                 "evoluciona_a":         data.evoluciona_a,
                 "nivel_evolucion":      data.nivel_evolucion,
-                "sprite":               data.sprite,
+                "sprite_frontal":       data.sprite_frontal,
+                "sprite_trasero":       data.sprite_trasero,
                 "catch_rate":           data.catch_rate,
                 "exp_yield":            data.exp_yield,
                 "growth_rate":          data.growth_rate,
