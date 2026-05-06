@@ -15,6 +15,11 @@ from app.schemas.partida.partida_schema import (
 )
 
 _NIVEL_STARTER = 5
+_STARTERS_INICIALES = {
+    1: 1001,
+    2: 1002,
+    3: 1003,
+}
 
 
 async def crear_partida(datos: PartidaNuevaSchema, usuario: Usuario) -> Partida:
@@ -40,7 +45,9 @@ async def elegir_starter(partida_id: str, starter_numero: int, usuario: Usuario)
     if partida.starter_elegido is not None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Ya tienes un starter")
 
-    catalogo = await IbermonCatalogo.find_one(IbermonCatalogo.numero == starter_numero)
+    starter_catalogo = _STARTERS_INICIALES.get(starter_numero, starter_numero)
+
+    catalogo = await IbermonCatalogo.find_one(IbermonCatalogo.numero == starter_catalogo)
     if not catalogo:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Starter no encontrado")
 
@@ -59,7 +66,7 @@ async def elegir_starter(partida_id: str, starter_numero: int, usuario: Usuario)
 
     starter = IbermonJugador(
         partida_id=partida.id,
-        ibermon_catalogo_id=starter_numero,
+        ibermon_catalogo_id=starter_catalogo,
         nivel=_NIVEL_STARTER,
         hp_actual=hp_inicial,
         hp_maximo=hp_inicial,
@@ -68,7 +75,7 @@ async def elegir_starter(partida_id: str, starter_numero: int, usuario: Usuario)
     )
     await starter.insert()
 
-    partida.starter_elegido = starter_numero
+    partida.starter_elegido = starter_catalogo
     partida.equipo.append(starter.id)
     await partida.save()
     return partida
