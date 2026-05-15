@@ -13,6 +13,7 @@ class ItemCatalogoCrearSchema(BaseModel):
     tipo: str
     efecto: EfectoItemSchema
     precio: int
+    sprite_frontal: str | None = None
 
 
 # --- RESPONSE ---
@@ -23,6 +24,7 @@ class ItemCatalogoResumenSchema(BaseModel):
     nombre: str
     tipo: str
     precio: int
+    sprite_frontal: str | None = None
 
 
 class ItemCatalogoDetalleSchema(BaseModel):
@@ -33,3 +35,4 @@ class ItemCatalogoDetalleSchema(BaseModel):
     tipo: str
     efecto: EfectoItemSchema
     precio: int
+    sprite_frontal: str | None = None
