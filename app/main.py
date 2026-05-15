@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 
 from starlette.responses import HTMLResponse
@@ -43,6 +44,9 @@ app.include_router(ibermon_jugador_router.router)
 app.include_router(item_jugador_router.router)
 app.include_router(catalogo_router.router)
 app.include_router(chatbot_router.router)
+
+# Sprites de los iniciales creados por el equipo
+app.mount("/sprites", StaticFiles(directory="data/sprites"), name="sprites")
 
 
 @app.get("/", response_class=HTMLResponse)
