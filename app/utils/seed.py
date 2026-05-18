@@ -5,10 +5,11 @@ Ejecutar desde la raiz del proyecto:
 
     python -m app.utils.seed
 
-Orquesta los tres seeds en orden:
+Orquesta los cuatro bloques de seed en orden:
   1. seed_pokeapi   -> 649 Pokemon canonicos + sus movimientos (de PokeAPI)
   2. seed_iniciales -> 3 iniciales custom + 11 movimientos custom
-  3. items + logros -> hardcoded en este archivo
+  3. seed_kotlin    -> Kotlin + AtaqueDependencias
+  4. items + logros -> hardcoded en este archivo
 
 Todas las funciones son idempotentes: si la coleccion ya tiene datos, se omite.
 Si quieres re-seedear desde cero, usa clean.py primero.
@@ -22,7 +23,7 @@ from app.core.config import settings
 from app.models.item_catalogo import ItemCatalogo, EfectoItem
 from app.models.logro_catalogo import LogroCatalogo
 
-from app.utils import seed_pokeapi, seed_iniciales
+from app.utils import seed_pokeapi, seed_iniciales, seed_kotlin
 
 
 # ──────────────────────────────────────────
@@ -107,15 +108,19 @@ async def main():
     print("=== Seed unificado ===\n")
 
     # 1. Pokemon canonicos + movimientos via PokeAPI
-    print("[1/3] Pokemon canonicos y movimientos (PokeAPI)...")
+    print("[1/4] Pokemon canonicos y movimientos (PokeAPI)...")
     await seed_pokeapi.main(1, 649, False)
 
     # 2. Iniciales custom (Nenzen, Kal-Noel, Antonio Recio)
-    print("\n[2/3] Iniciales custom...")
+    print("\n[2/4] Iniciales custom...")
     await seed_iniciales.main()
 
-    # 3. Items y logros (datos locales)
-    print("\n[3/3] Items y logros...")
+    # 3. Kotlin custom
+    print("\n[3/4] Kotlin custom...")
+    await seed_kotlin.main()
+
+    # 4. Items y logros (datos locales)
+    print("\n[4/4] Items y logros...")
     client = AsyncIOMotorClient(settings.MONGO_URI)
     await init_beanie(
         database=client[settings.MONGO_DB_NAME],
