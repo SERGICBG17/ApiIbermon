@@ -3,7 +3,7 @@ from fastapi import APIRouter
 from app.services import catalogo_service
 from app.schemas.ibermon_catalogo.ibermon_catalogo_schema import IbermonCatalogoResumenSchema, IbermonCatalogoDetalleSchema
 from app.schemas.movimiento_catalogo_schema import MovimientoCatalogoResumenSchema, MovimientoCatalogoDetalleSchema
-from app.schemas.item_catalogo.item_catalogo_schema import ItemCatalogoResumenSchema, ItemCatalogoDetalleSchema
+from app.schemas.item_catalogo.item_catalogo_schema import ItemCatalogoResumenSchema, ItemCatalogoDetalleSchema, ItemCatalogoCrearSchema
 from app.schemas.logro_schema import LogroCatalogoSchema
 
 router = APIRouter(prefix="/catalogo", tags=["Catálogos Públicos"])
@@ -44,6 +44,16 @@ async def listar_items():
 async def detalle_item(numero: int):
     return await catalogo_service.obtener_item_por_numero(numero)
 
+@router.post("/items", response_model=ItemCatalogoDetalleSchema, status_code=201)
+async def crear_item(datos: ItemCatalogoCrearSchema):
+    """Crea un item nuevo en el catalogo. Falla si ya existe uno con el mismo numero."""
+    return await catalogo_service.crear_item(datos)
+
+
+@router.post("/items/bulk", status_code=201)
+async def crear_items_bulk(datos: list[ItemCatalogoCrearSchema]):
+    """Crea varios items de golpe en el catalogo. Salta los que ya existian."""
+    return await catalogo_service.crear_items_bulk(datos)
 
 # --- LOGROS ---
 
