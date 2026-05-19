@@ -45,13 +45,18 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
+      # Esperamos a que el seed termine (exit 0) antes de levantar la API.
+      # Si el seed ya estaba hecho, sale en segundos por idempotencia.
+      seed:
+        condition: service_completed_successfully
     networks:
       - ibermon_network
     volumes:
       - ./app:/app/app
       - ./data:/app/data
 
-  # Servicio opcional para ejecutar el seed de datos
+  # Seed automatico de datos. Arranca con cada `docker compose up`,
+  # pero el script es idempotente: si la BD ya tiene datos, sale sin tocar nada.
   seed:
     build:
       context: .
@@ -60,14 +65,19 @@ services:
     environment:
       MONGO_URI: mongodb://${MONGO_ROOT_USERNAME:-admin}:${MONGO_ROOT_PASSWORD:-admin123}@mongodb:27017/ibermon_db?authSource=admin
       MONGO_DB_NAME: ibermon_db
+      # Pydantic Settings exige estos campos aunque el seed no los use directamente
+      SECRET_KEY: ${SECRET_KEY:-dev_secret_key_de_prueba}
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 60
+      APP_NAME: Apilbermon
+      DEBUG: ${DEBUG:-False}
     depends_on:
       mongodb:
         condition: service_healthy
     networks:
       - ibermon_network
     command: python -m app.utils.seed
-    profiles:
-      - seed
+    restart: "no"
 
 volumes:
   mongodb_data:
