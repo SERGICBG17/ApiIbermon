@@ -11,12 +11,6 @@ services:
       - mongodb_data:/data/db
     networks:
       - ibermon_network
-    healthcheck:
-      test: ["CMD-SHELL", "mongosh --quiet --host localhost -u \"$${MONGO_INITDB_ROOT_USERNAME}\" -p \"$${MONGO_INITDB_ROOT_PASSWORD}\" --authenticationDatabase admin --eval \"db.adminCommand({ ping: 1 })\""]
-      interval: 10s
-      timeout: 10s
-      retries: 20
-      start_period: 30s
 
   api:
     build:
@@ -35,8 +29,7 @@ services:
       APP_NAME: Apilbermon
       DEBUG: ${DEBUG:-False}
     depends_on:
-      mongodb:
-        condition: service_healthy
+      - mongodb
     networks:
       - ibermon_network
 
