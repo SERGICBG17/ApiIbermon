@@ -177,49 +177,18 @@ def move_short_effect(move: dict) -> Optional[str]:
 
 def get_sprite_frontal(pokemon: dict) -> str:
     """
-    Prioridad de sprite frontal:
-      1. Gen V BW animated front_default (.gif)
-      2. Gen V BW static front_default (.png)
-      3. Official artwork front_default
-      4. sprites.front_default (fallback)
+    Ruta local del sprite frontal en Unity:
+      Assets/_Game/Resources/Sprites/Pokemon/{id}.png
     """
-    try:
-        bw = pokemon["sprites"]["versions"]["generation-v"]["black-white"]
-        anim = (bw.get("animated") or {}).get("front_default")
-        if anim:
-            return anim
-        static = bw.get("front_default")
-        if static:
-            return static
-    except (KeyError, TypeError):
-        pass
-    try:
-        art = pokemon["sprites"]["other"]["official-artwork"]["front_default"]
-        if art:
-            return art
-    except (KeyError, TypeError):
-        pass
-    return pokemon.get("sprites", {}).get("front_default") or ""
+    return f"{pokemon['id']}.png"
 
 
 def get_sprite_trasero(pokemon: dict) -> str:
     """
-    Prioridad de sprite trasero:
-      1. Gen V BW animated back_default (.gif)
-      2. Gen V BW static back_default (.png)
-      3. sprites.back_default (fallback)
+    Ruta local del sprite trasero en Unity:
+      Assets/_Game/Resources/Sprites/Pokemon/back/{id}.png
     """
-    try:
-        bw = pokemon["sprites"]["versions"]["generation-v"]["black-white"]
-        anim = (bw.get("animated") or {}).get("back_default")
-        if anim:
-            return anim
-        static = bw.get("back_default")
-        if static:
-            return static
-    except (KeyError, TypeError):
-        pass
-    return pokemon.get("sprites", {}).get("back_default") or ""
+    return f"back/{pokemon['id']}.png"
 
 
 def get_level_up_moves(pokemon: dict) -> List[Tuple[int, int]]:
