@@ -1,8 +1,5 @@
 services:
-  # ─────────────────────────────────────────────────────────────
-  # MongoDB — solo accesible desde la red interna del compose.
-  # No exponemos puerto al host en produccion (seguridad).
-  # ─────────────────────────────────────────────────────────────
+
   mongodb:
     image: mongo:7.0
     container_name: ibermon_mongodb
@@ -21,11 +18,7 @@ services:
       timeout: 10s
       retries: 5
 
-  # ─────────────────────────────────────────────────────────────
-  # Restore one-shot. Si la BD esta vacia, restaura el dump
-  # commiteado en ./data/dump. Si ya tiene datos, sale en 1s.
-  # Sustituye al seed-online en despliegues reales (sin internet rapida).
-  # ─────────────────────────────────────────────────────────────
+
   restore:
     image: mongo:7.0
     container_name: ibermon_restore
@@ -43,10 +36,7 @@ services:
     entrypoint: ["bash", "/scripts/restore.sh"]
     restart: "no"
 
-  # ─────────────────────────────────────────────────────────────
-  # API FastAPI — expuesta en el puerto 25013 del host (IES Luis Vives).
-  # Internamente sigue siendo el 8000.
-  # ─────────────────────────────────────────────────────────────
+
   api:
     build:
       context: .
@@ -74,12 +64,7 @@ services:
     networks:
       - ibermon_network
 
-  # ─────────────────────────────────────────────────────────────
-  # Re-seed desde PokeAPI.
-  # Uso: docker compose --profile reseed up reseed
-  # Solo para regenerar el dump cuando cambias el esquema o quieres
-  # refrescar los datos del catalogo.
-  # ─────────────────────────────────────────────────────────────
+
   reseed:
     build:
       context: .
