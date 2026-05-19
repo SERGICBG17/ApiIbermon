@@ -94,6 +94,36 @@ ENTRENADORES = [
         },
         "sprite": None,
     },
+    {
+        "numero": 2,
+        "nombre": "Miri",
+        "equipo": [
+            {"numero": 19, "nivel": 7, "movs": []},
+            {"numero": 16, "nivel": 7, "movs": []},
+        ],
+        "recompensa": 250,
+        "dialogos": {
+            "antes": "Combate conmigo, que me aburro.",
+            "victoria": "Vale, no esta mal para ser un casual.",
+            "derrota": "Te falta aim, hasta en Pokemon.",
+        },
+        "sprite": None,
+    },
+    {
+        "numero": 3,
+        "nombre": "Claudia",
+        "equipo": [
+            {"numero": 23, "nivel": 8, "movs": []},
+            {"numero": 21, "nivel": 8, "movs": []},
+        ],
+        "recompensa": 300,
+        "dialogos": {
+            "antes": "Ahora me toca a mi.",
+            "victoria": "Vale. Eres mejor de lo que esperaba.",
+            "derrota": "Te lo dije. En Pokemon soy mejor.",
+        },
+        "sprite": None,
+    },
 ]
 
 

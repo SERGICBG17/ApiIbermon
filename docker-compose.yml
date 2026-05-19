@@ -1,11 +1,12 @@
 services:
-  # Servicio de MongoDB
+  # ─────────────────────────────────────────────────────────────
+  # MongoDB — solo accesible desde la red interna del compose.
+  # No exponemos puerto al host en produccion (seguridad).
+  # ─────────────────────────────────────────────────────────────
   mongodb:
     image: mongo:7.0
     container_name: ibermon_mongodb
     restart: unless-stopped
-    ports:
-      - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME:-admin}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-admin123}
@@ -20,7 +21,32 @@ services:
       timeout: 10s
       retries: 5
 
-  # Servicio de la API FastAPI
+  # ─────────────────────────────────────────────────────────────
+  # Restore one-shot. Si la BD esta vacia, restaura el dump
+  # commiteado en ./data/dump. Si ya tiene datos, sale en 1s.
+  # Sustituye al seed-online en despliegues reales (sin internet rapida).
+  # ─────────────────────────────────────────────────────────────
+  restore:
+    image: mongo:7.0
+    container_name: ibermon_restore
+    environment:
+      MONGO_URI: mongodb://${MONGO_ROOT_USERNAME:-admin}:${MONGO_ROOT_PASSWORD:-admin123}@mongodb:27017/?authSource=admin
+      MONGO_DB_NAME: ibermon_db
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    volumes:
+      - ./data/dump:/dump:ro
+      - ./scripts:/scripts:ro
+    networks:
+      - ibermon_network
+    entrypoint: ["bash", "/scripts/restore.sh"]
+    restart: "no"
+
+  # ─────────────────────────────────────────────────────────────
+  # API FastAPI — expuesta en el puerto 25013 del host (IES Luis Vives).
+  # Internamente sigue siendo el 8000.
+  # ─────────────────────────────────────────────────────────────
   api:
     build:
       context: .
@@ -28,44 +54,37 @@ services:
     container_name: ibermon_api
     restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "${API_PORT:-25013}:8000"
     environment:
-      # MongoDB
       MONGO_URI: mongodb://${MONGO_ROOT_USERNAME:-admin}:${MONGO_ROOT_PASSWORD:-admin123}@mongodb:27017/ibermon_db?authSource=admin
       MONGO_DB_NAME: ibermon_db
-
-      # JWT
       SECRET_KEY: ${SECRET_KEY:-dev_secret_key_de_prueba}
       ALGORITHM: HS256
       ACCESS_TOKEN_EXPIRE_MINUTES: 60
-
-      # App
       APP_NAME: Apilbermon
       DEBUG: ${DEBUG:-False}
     depends_on:
       mongodb:
         condition: service_healthy
-      # Esperamos a que el seed termine (exit 0) antes de levantar la API.
-      # Si el seed ya estaba hecho, sale en segundos por idempotencia.
-      seed:
+      restore:
         condition: service_completed_successfully
     networks:
       - ibermon_network
-    volumes:
-      - ./app:/app/app
-      - ./data:/app/data
 
-  # Seed automatico de datos. Arranca con cada `docker compose up`,
-  # pero el script es idempotente: si la BD ya tiene datos, sale sin tocar nada.
-  seed:
+  # ─────────────────────────────────────────────────────────────
+  # Re-seed desde PokeAPI (perfil opcional).
+  # Uso: docker compose --profile reseed up reseed
+  # Solo para regenerar el dump cuando cambias el esquema o quieres
+  # refrescar los datos del catalogo.
+  # ─────────────────────────────────────────────────────────────
+  reseed:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: ibermon_seed
+    container_name: ibermon_reseed
     environment:
       MONGO_URI: mongodb://${MONGO_ROOT_USERNAME:-admin}:${MONGO_ROOT_PASSWORD:-admin123}@mongodb:27017/ibermon_db?authSource=admin
       MONGO_DB_NAME: ibermon_db
-      # Pydantic Settings exige estos campos aunque el seed no los use directamente
       SECRET_KEY: ${SECRET_KEY:-dev_secret_key_de_prueba}
       ALGORITHM: HS256
       ACCESS_TOKEN_EXPIRE_MINUTES: 60
@@ -78,6 +97,8 @@ services:
       - ibermon_network
     command: python -m app.utils.seed
     restart: "no"
+    profiles:
+      - reseed
 
 volumes:
   mongodb_data:
