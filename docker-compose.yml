@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Servicio de MongoDB
   mongodb:
@@ -51,6 +49,7 @@ services:
       - ibermon_network
     volumes:
       - ./app:/app/app
+      - ./data:/app/data
 
   # Servicio opcional para ejecutar el seed de datos
   seed:

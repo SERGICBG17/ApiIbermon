@@ -63,7 +63,10 @@ async def seed_movimiento_kotlin():
         MovimientoCatalogo.numero == MOVIMIENTO_KOTLIN["numero"]
     )
     if existe:
-        print("  Movimiento AtaqueDependencias ya existía")
+        for campo, valor in MOVIMIENTO_KOTLIN.items():
+            setattr(existe, campo, valor)
+        await existe.save()
+        print("  Movimiento AtaqueDependencias actualizado")
         return
 
     await MovimientoCatalogo(**MOVIMIENTO_KOTLIN).insert()
@@ -73,7 +76,14 @@ async def seed_movimiento_kotlin():
 async def seed_ibermon_kotlin():
     existe = await IbermonCatalogo.find_one(IbermonCatalogo.numero == KOTLIN["numero"])
     if existe:
-        print("  Ibermon Kotlin ya existía")
+        for campo, valor in KOTLIN.items():
+            if campo == "stats_base":
+                valor = StatsBase(**valor)
+            elif campo == "movimientos_posibles":
+                valor = [MovimientoPosible(**mp) for mp in valor]
+            setattr(existe, campo, valor)
+        await existe.save()
+        print("  Ibermon Kotlin actualizado")
         return
 
     doc = IbermonCatalogo(
