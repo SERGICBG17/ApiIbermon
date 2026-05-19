@@ -26,6 +26,7 @@ services:
       ACCESS_TOKEN_EXPIRE_MINUTES: 60
       APP_NAME: Apilbermon
       DEBUG: ${DEBUG:-False}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
     depends_on:
       - mongodb
     networks:
