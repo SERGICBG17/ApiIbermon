@@ -1,7 +1,6 @@
 services:
   mongodb:
-    image: mongo:6.0
-    container_name: ibermon_mongodb
+    image: mongo:4.4
     restart: unless-stopped
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME:-admin}
@@ -16,7 +15,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: ibermon_api
     restart: unless-stopped
     ports:
       - "${API_PORT:-25013}:8000"
