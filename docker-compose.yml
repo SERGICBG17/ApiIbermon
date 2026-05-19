@@ -19,24 +19,6 @@ services:
       retries: 5
 
 
-  restore:
-    image: mongo:7.0
-    container_name: ibermon_restore
-    environment:
-      MONGO_URI: mongodb://${MONGO_ROOT_USERNAME:-admin}:${MONGO_ROOT_PASSWORD:-admin123}@mongodb:27017/?authSource=admin
-      MONGO_DB_NAME: ibermon_db
-    depends_on:
-      mongodb:
-        condition: service_healthy
-    volumes:
-      - ./data/dump:/dump:ro
-      - ./scripts:/scripts:ro
-    networks:
-      - ibermon_network
-    entrypoint: ["bash", "/scripts/restore.sh"]
-    restart: "no"
-
-
   api:
     build:
       context: .
@@ -56,35 +38,9 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
-      # Mientras no tengamos dump commiteado, dependemos de reseed (PokeAPI).
-      # Cuando exista data/dump/ commiteado, cambiar esto a 'restore' y
-      # devolver 'reseed' al perfil opcional.
-      reseed:
-        condition: service_completed_successfully
     networks:
       - ibermon_network
 
-
-  reseed:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: ibermon_reseed
-    environment:
-      MONGO_URI: mongodb://${MONGO_ROOT_USERNAME:-admin}:${MONGO_ROOT_PASSWORD:-admin123}@mongodb:27017/ibermon_db?authSource=admin
-      MONGO_DB_NAME: ibermon_db
-      SECRET_KEY: ${SECRET_KEY:-dev_secret_key_de_prueba}
-      ALGORITHM: HS256
-      ACCESS_TOKEN_EXPIRE_MINUTES: 60
-      APP_NAME: Apilbermon
-      DEBUG: ${DEBUG:-False}
-    depends_on:
-      mongodb:
-        condition: service_healthy
-    networks:
-      - ibermon_network
-    command: python -m app.utils.seed
-    restart: "no"
 
 volumes:
   mongodb_data:
