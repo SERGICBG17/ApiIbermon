@@ -1,7 +1,7 @@
 services:
 
   mongodb:
-    image: mongo:7.0
+    image: mongo:6.0
     container_name: ibermon_mongodb
     restart: unless-stopped
     environment:
@@ -13,12 +13,11 @@ services:
     networks:
       - ibermon_network
     healthcheck:
-      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
       interval: 10s
       timeout: 10s
-      retries: 10
-
-
+      retries: 20
+      start_period: 20s
 
   api:
     build:
@@ -41,7 +40,6 @@ services:
         condition: service_healthy
     networks:
       - ibermon_network
-
 
 volumes:
   mongodb_data:
