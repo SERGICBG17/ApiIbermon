@@ -10,6 +10,7 @@ from app.models.ibermon_catalogo.ibermon_catalogo import IbermonCatalogo
 from app.models.movimiento_catalogo import MovimientoCatalogo
 from app.models.item_catalogo.item_catalogo import ItemCatalogo
 from app.models.logro_catalogo import LogroCatalogo
+from app.models.entrenador_catalogo import EntrenadorCatalogo
 
 
 async def connect_db():
@@ -26,5 +27,6 @@ async def connect_db():
             MovimientoCatalogo,
             ItemCatalogo,
             LogroCatalogo,
+            EntrenadorCatalogo,
         ],
     )

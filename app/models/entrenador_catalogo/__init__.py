@@ -1,0 +1,3 @@
+from app.models.entrenador_catalogo.entrenador_catalogo import EntrenadorCatalogo
+from app.models.entrenador_catalogo.equipo_entrenador import EquipoEntrenador
+from app.models.entrenador_catalogo.dialogos_entrenador import DialogosEntrenador

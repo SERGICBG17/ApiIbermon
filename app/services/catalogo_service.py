@@ -5,7 +5,9 @@ from app.models.movimiento_catalogo import MovimientoCatalogo
 from app.models.item_catalogo.item_catalogo import ItemCatalogo
 from app.models.logro_catalogo import LogroCatalogo
 from app.models.item_catalogo.efecto_item import EfectoItem
+from app.models.entrenador_catalogo import EntrenadorCatalogo, EquipoEntrenador, DialogosEntrenador
 from app.schemas.item_catalogo.item_catalogo_schema import ItemCatalogoCrearSchema
+from app.schemas.entrenador_catalogo.entrenador_catalogo_schema import EntrenadorCatalogoCrearSchema
 
 # --- IBERMON CATALOGO ---
 
@@ -111,3 +113,73 @@ async def obtener_logro_por_codigo(codigo: str) -> LogroCatalogo:
     if not logro:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Logro no encontrado")
     return logro
+
+
+# --- ENTRENADOR CATALOGO ---
+
+async def obtener_todos_entrenadores() -> list[EntrenadorCatalogo]:
+    return await EntrenadorCatalogo.find_all().to_list()
+
+
+async def obtener_entrenador_por_numero(numero: int) -> EntrenadorCatalogo:
+    entrenador = await EntrenadorCatalogo.find_one(EntrenadorCatalogo.numero == numero)
+    if not entrenador:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Entrenador no encontrado")
+    return entrenador
+
+
+async def obtener_entrenador_por_nombre(nombre: str) -> EntrenadorCatalogo:
+    entrenador = await EntrenadorCatalogo.find_one(EntrenadorCatalogo.nombre == nombre)
+    if not entrenador:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Entrenador no encontrado")
+    return entrenador
+
+
+async def crear_entrenador(datos: EntrenadorCatalogoCrearSchema) -> EntrenadorCatalogo:
+    """Crea un entrenador nuevo en el catalogo."""
+    existente = await EntrenadorCatalogo.find_one(EntrenadorCatalogo.numero == datos.numero)
+    if existente:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Ya existe un entrenador con numero={datos.numero}",
+        )
+
+    nuevo = EntrenadorCatalogo(
+        numero=datos.numero,
+        nombre=datos.nombre,
+        equipo=[EquipoEntrenador(**e.model_dump()) for e in datos.equipo],
+        recompensa=datos.recompensa,
+        dialogos=DialogosEntrenador(**datos.dialogos.model_dump()),
+        sprite=datos.sprite,
+    )
+    await nuevo.insert()  # type: ignore
+    return nuevo
+
+
+async def crear_entrenadores_bulk(datos: list[EntrenadorCatalogoCrearSchema]) -> dict:
+    """Inserta varios entrenadores de golpe. Los duplicados se saltan."""
+    creados = []
+    ya_existian = []
+
+    for ent in datos:
+        existente = await EntrenadorCatalogo.find_one(EntrenadorCatalogo.numero == ent.numero)
+        if existente:
+            ya_existian.append(ent.numero)
+            continue
+
+        nuevo = EntrenadorCatalogo(
+            numero=ent.numero,
+            nombre=ent.nombre,
+            equipo=[EquipoEntrenador(**e.model_dump()) for e in ent.equipo],
+            recompensa=ent.recompensa,
+            dialogos=DialogosEntrenador(**ent.dialogos.model_dump()),
+            sprite=ent.sprite,
+        )
+        await nuevo.insert()  # type: ignore
+        creados.append(ent.numero)
+
+    return {
+        "creados": creados,
+        "ya_existian": ya_existian,
+        "total_creados": len(creados),
+    }

@@ -5,6 +5,11 @@ from app.schemas.ibermon_catalogo.ibermon_catalogo_schema import IbermonCatalogo
 from app.schemas.movimiento_catalogo_schema import MovimientoCatalogoResumenSchema, MovimientoCatalogoDetalleSchema
 from app.schemas.item_catalogo.item_catalogo_schema import ItemCatalogoResumenSchema, ItemCatalogoDetalleSchema, ItemCatalogoCrearSchema
 from app.schemas.logro_schema import LogroCatalogoSchema
+from app.schemas.entrenador_catalogo.entrenador_catalogo_schema import (
+    EntrenadorCatalogoResumenSchema,
+    EntrenadorCatalogoDetalleSchema,
+    EntrenadorCatalogoCrearSchema,
+)
 
 router = APIRouter(prefix="/catalogo", tags=["Catálogos Públicos"])
 
@@ -65,3 +70,30 @@ async def listar_logros():
 @router.get("/logros/{codigo}", response_model=LogroCatalogoSchema)
 async def detalle_logro(codigo: str):
     return await catalogo_service.obtener_logro_por_codigo(codigo)
+
+
+# --- ENTRENADORES ---
+
+@router.get("/entrenadores", response_model=list[EntrenadorCatalogoResumenSchema])
+async def listar_entrenadores():
+    return await catalogo_service.obtener_todos_entrenadores()
+
+
+@router.get("/entrenadores/{numero}", response_model=EntrenadorCatalogoDetalleSchema)
+async def detalle_entrenador(numero: int):
+    return await catalogo_service.obtener_entrenador_por_numero(numero)
+
+
+@router.get("/entrenadores/por-nombre/{nombre}", response_model=EntrenadorCatalogoDetalleSchema)
+async def detalle_entrenador_por_nombre(nombre: str):
+    return await catalogo_service.obtener_entrenador_por_nombre(nombre)
+
+
+@router.post("/entrenadores", response_model=EntrenadorCatalogoDetalleSchema, status_code=201)
+async def crear_entrenador(datos: EntrenadorCatalogoCrearSchema):
+    return await catalogo_service.crear_entrenador(datos)
+
+
+@router.post("/entrenadores/bulk", status_code=201)
+async def crear_entrenadores_bulk(datos: list[EntrenadorCatalogoCrearSchema]):
+    return await catalogo_service.crear_entrenadores_bulk(datos)

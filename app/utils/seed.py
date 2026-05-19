@@ -9,7 +9,7 @@ Orquesta los cuatro bloques de seed en orden:
   1. seed_pokeapi   -> 649 Pokemon canonicos + sus movimientos (de PokeAPI)
   2. seed_iniciales -> 3 iniciales custom + 11 movimientos custom
   3. seed_kotlin    -> Kotlin + AtaqueDependencias
-  4. items + logros -> hardcoded en este archivo
+  4. items + logros + entrenadores -> hardcoded en este archivo
 
 Todas las funciones son idempotentes: si la coleccion ya tiene datos, se omite.
 Si quieres re-seedear desde cero, usa clean.py primero.
@@ -22,6 +22,7 @@ from beanie import init_beanie
 from app.core.config import settings
 from app.models.item_catalogo import ItemCatalogo, EfectoItem
 from app.models.logro_catalogo import LogroCatalogo
+from app.models.entrenador_catalogo import EntrenadorCatalogo, EquipoEntrenador, DialogosEntrenador
 
 from app.utils import seed_pokeapi, seed_iniciales, seed_kotlin
 
@@ -76,6 +77,27 @@ LOGROS = [
 
 
 # ──────────────────────────────────────────
+# ENTRENADORES
+# ──────────────────────────────────────────
+ENTRENADORES = [
+    {
+        "numero": 1,
+        "nombre": "Paloma",
+        "equipo": [
+            {"numero": 1004, "nivel": 12, "movs": [10012]},
+        ],
+        "recompensa": 500,
+        "dialogos": {
+            "antes": "Luchemos!",
+            "victoria": "Aun me queda mucho que aprender.",
+            "derrota": "Nadie escapa de mi vista.",
+        },
+        "sprite": None,
+    },
+]
+
+
+# ──────────────────────────────────────────
 # SEEDERS LOCALES (items y logros)
 # ──────────────────────────────────────────
 
@@ -100,6 +122,38 @@ async def seed_logros():
     print(f"  {len(LOGROS)} logros insertados")
 
 
+async def seed_entrenadores():
+    creados = 0
+    actualizados = 0
+
+    for ent in ENTRENADORES:
+        existente = await EntrenadorCatalogo.find_one(EntrenadorCatalogo.numero == ent["numero"])
+        equipo = [EquipoEntrenador(**e) for e in ent["equipo"]]
+        dialogos = DialogosEntrenador(**ent["dialogos"])
+
+        if existente:
+            existente.nombre = ent["nombre"]
+            existente.equipo = equipo
+            existente.recompensa = ent["recompensa"]
+            existente.dialogos = dialogos
+            existente.sprite = ent.get("sprite")
+            await existente.save()
+            actualizados += 1
+            continue
+
+        await EntrenadorCatalogo(
+            numero=ent["numero"],
+            nombre=ent["nombre"],
+            equipo=equipo,
+            recompensa=ent["recompensa"],
+            dialogos=dialogos,
+            sprite=ent.get("sprite"),
+        ).insert()
+        creados += 1
+
+    print(f"  {creados} entrenadores insertados, {actualizados} actualizados")
+
+
 # ──────────────────────────────────────────
 # ORQUESTADOR
 # ──────────────────────────────────────────
@@ -119,15 +173,16 @@ async def main():
     print("\n[3/4] Kotlin custom...")
     await seed_kotlin.main()
 
-    # 4. Items y logros (datos locales)
-    print("\n[4/4] Items y logros...")
+    # 4. Items, logros y entrenadores (datos locales)
+    print("\n[4/4] Items, logros y entrenadores...")
     client = AsyncIOMotorClient(settings.MONGO_URI)
     await init_beanie(
         database=client[settings.MONGO_DB_NAME],
-        document_models=[ItemCatalogo, LogroCatalogo],
+        document_models=[ItemCatalogo, LogroCatalogo, EntrenadorCatalogo],
     )
     await seed_items()
     await seed_logros()
+    await seed_entrenadores()
 
     print("\n=== Seed completado ===")
 
