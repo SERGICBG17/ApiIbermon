@@ -66,13 +66,16 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
-      restore:
+      # Mientras no tengamos dump commiteado, dependemos de reseed (PokeAPI).
+      # Cuando exista data/dump/ commiteado, cambiar esto a 'restore' y
+      # devolver 'reseed' al perfil opcional.
+      reseed:
         condition: service_completed_successfully
     networks:
       - ibermon_network
 
   # ─────────────────────────────────────────────────────────────
-  # Re-seed desde PokeAPI (perfil opcional).
+  # Re-seed desde PokeAPI.
   # Uso: docker compose --profile reseed up reseed
   # Solo para regenerar el dump cuando cambias el esquema o quieres
   # refrescar los datos del catalogo.
@@ -97,8 +100,6 @@ services:
       - ibermon_network
     command: python -m app.utils.seed
     restart: "no"
-    profiles:
-      - reseed
 
 volumes:
   mongodb_data:
